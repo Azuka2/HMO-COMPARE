@@ -1064,6 +1064,18 @@
             </div>
         </div>
 
+        <!-- Coverage Gap Screen -->
+        <div id="screen-coverage-gap" class="screen">
+            <div class="container" id="coverage-gap-container">
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <button class="btn btn-secondary" style="margin-bottom: var(--spacing-lg);" onclick="app.navigate('results')">← Back to Results</button>
+                    <h1 style="font-size: var(--font-size-2xl); color: var(--color-primary); margin-bottom: var(--spacing-md);">Check Your Coverage Gap</h1>
+                    <p style="color: var(--color-text-light); margin-bottom: var(--spacing-lg);">Test what the plan actually publishes for a benefit you care about.</p>
+                    <div id="gap-calculator" style="background: white; padding: var(--spacing-lg); border-radius: var(--radius-lg); border: 1px solid var(--color-border);"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- About Screen (Founder Authority) -->
         <div id="screen-about" class="screen">
             <div class="container">
@@ -2180,8 +2192,9 @@
                             <li style="margin-bottom: var(--spacing-md);">• Match percentages reflect fit against what we could verify — not a judgement of overall quality.</li>
                             <li style="margin-bottom: var(--spacing-md);">• We can't yet confirm which hospitals near you accept each exact plan. That's why we've highlighted it as your #1 verification step.</li>
                         </ul>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
                             <button class="btn btn-primary" onclick="app.initializeComparison(app.currentRecommendation)">📊 Compare Plans</button>
+                            <button class="btn btn-primary" onclick="app.initializeCoverageGap(app.currentRecommendation)">💰 Check Gap</button>
                             <button class="btn btn-secondary" onclick="app.navigate('landing')">← Back to Home</button>
                         </div>
                     </div>
@@ -2737,6 +2750,264 @@ I'm interested in learning more about this plan. Can you help me verify:
 
                 const encodedMessage = encodeURIComponent(message);
                 window.open(`https://wa.me/2348180100100?text=${encodedMessage}`, '_blank');
+            },
+
+            // SPRINT 8: COVERAGE GAP CALCULATOR
+
+            initializeCoverageGap(recommendation) {
+                if (!recommendation || !recommendation.top_3) {
+                    alert('No recommendation data available');
+                    return;
+                }
+                this.currentGapCalculation = {
+                    recommendation: recommendation,
+                    selectedPlanIndices: [0],
+                    selectedBenefit: 'surgery_major',
+                    userRequirement: 2000000,
+                    result: null
+                };
+                this.navigate('coverage-gap');
+                this.renderCoverageGapCalculator();
+            },
+
+            renderCoverageGapCalculator() {
+                const calc = this.currentGapCalculation;
+                if (!calc || !calc.recommendation) return;
+
+                const rec = calc.recommendation;
+                const benefitOptions = [
+                    { id: 'surgery_major', label: 'Major Surgery' },
+                    { id: 'maternity', label: 'Maternity' },
+                    { id: 'emergency', label: 'Emergency' },
+                    { id: 'cancer_care', label: 'Cancer Care' },
+                    { id: 'dialysis', label: 'Dialysis' },
+                    { id: 'optical', label: 'Optical' },
+                    { id: 'dental', label: 'Dental' },
+                    { id: 'icu', label: 'ICU' },
+                    { id: 'diagnostics', label: 'Diagnostics' },
+                    { id: 'mri', label: 'MRI' },
+                    { id: 'ct', label: 'CT Scan' },
+                    { id: 'drugs', label: 'Medications' },
+                    { id: 'physiotherapy', label: 'Physiotherapy' },
+                    { id: 'mental_health', label: 'Mental Health' }
+                ];
+
+                const allPlans = [...(rec.top_3 || []), ...(rec.alternatives || [])].slice(0, 8);
+
+                const container = document.getElementById('gap-calculator');
+                container.innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
+                        <!-- Benefit Selection -->
+                        <div>
+                            <label style="display: block; font-weight: bold; margin-bottom: var(--spacing-sm); color: var(--color-primary);">What benefit do you want to check?</label>
+                            <select id="benefit-select" style="width: 100%; padding: var(--spacing-md); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: var(--font-size-base);">
+                                ${benefitOptions.map(b => `<option value="${b.id}" ${b.id === calc.selectedBenefit ? 'selected' : ''}>${b.label}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <!-- Amount Input -->
+                        <div>
+                            <label style="display: block; font-weight: bold; margin-bottom: var(--spacing-sm); color: var(--color-primary);">How much protection do you want to test?</label>
+                            <div style="display: flex; gap: var(--spacing-sm); margin-bottom: var(--spacing-md);">
+                                <input type="number" id="amount-input" value="${calc.userRequirement}" min="1" step="100000" style="flex: 1; padding: var(--spacing-md); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: var(--font-size-base);" placeholder="Enter amount">
+                                <span style="padding: var(--spacing-md); background: var(--color-bg-alt); border-radius: var(--radius-md); font-weight: bold; color: var(--color-primary);">₦</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: var(--spacing-sm);">
+                                ${[100000, 250000, 500000, 1000000, 2000000, 5000000].map(amt => `
+                                    <button class="btn btn-secondary" style="font-size: var(--font-size-small);" onclick="document.getElementById('amount-input').value = ${amt}; app.updateAmountDisplay();">₦${(amt/1000).toFixed(0)}k</button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Plan Selection -->
+                        <div>
+                            <label style="display: block; font-weight: bold; margin-bottom: var(--spacing-sm); color: var(--color-primary);">Choose plans to compare (up to 3)</label>
+                            <div style="display: grid; gap: var(--spacing-sm);">
+                                ${allPlans.map((rec, idx) => `
+                                    <label style="display: flex; align-items: center; padding: var(--spacing-md); background: var(--color-bg-alt); border: 2px solid var(--color-border); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="checkbox" data-plan-idx="${idx}" ${calc.selectedPlanIndices.includes(idx) ? 'checked' : ''} style="margin-right: var(--spacing-md);" onchange="app.updateSelectedPlans();">
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: bold; color: var(--color-primary);">${rec.plan?.hmo_name || 'Unknown'}</div>
+                                            <div style="font-size: var(--font-size-small); color: var(--color-text-light);">${rec.plan?.plan_name || 'Plan'}</div>
+                                        </div>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Calculate Button -->
+                        <button class="btn btn-primary" style="width: 100%; padding: var(--spacing-md); font-size: var(--font-size-large);" onclick="app.performGapCalculation()">Calculate Coverage Gap</button>
+                    </div>
+
+                    <!-- Results will appear below -->
+                    <div id="gap-results-container" style="margin-top: var(--spacing-2xl);"></div>
+                `;
+
+                document.getElementById('benefit-select').onchange = (e) => {
+                    calc.selectedBenefit = e.target.value;
+                };
+                document.getElementById('amount-input').onchange = () => {
+                    calc.userRequirement = parseInt(document.getElementById('amount-input').value) || 0;
+                };
+            },
+
+            updateAmountDisplay() {
+                // Triggered after quick select buttons
+            },
+
+            updateSelectedPlans() {
+                const checkboxes = document.querySelectorAll('input[data-plan-idx]');
+                const selected = [];
+                checkboxes.forEach((cb) => {
+                    if (cb.checked) {
+                        const idx = parseInt(cb.getAttribute('data-plan-idx'));
+                        selected.push(idx);
+                    }
+                });
+                this.currentGapCalculation.selectedPlanIndices = selected.slice(0, 3);
+            },
+
+            performGapCalculation() {
+                const calc = this.currentGapCalculation;
+                if (!calc.selectedBenefit) {
+                    alert('Please select a benefit');
+                    return;
+                }
+                if (!calc.userRequirement || calc.userRequirement <= 0) {
+                    alert('Please enter an amount greater than ₦0');
+                    return;
+                }
+                if (calc.selectedPlanIndices.length === 0) {
+                    alert('Please select at least one plan');
+                    return;
+                }
+
+                const rec = calc.recommendation;
+                const allPlans = [...(rec.top_3 || []), ...(rec.alternatives || [])].slice(0, 8);
+                const results = calc.selectedPlanIndices.map(idx => {
+                    const planRec = allPlans[idx];
+                    return this.calculateGapForPlan(planRec, calc.selectedBenefit, calc.userRequirement);
+                });
+                calc.result = results;
+                this.displayGapResults(results);
+            },
+
+            calculateGapForPlan(planRec, benefitId, userRequirement) {
+                const plan = planRec.plan;
+                if (!plan) {
+                    return {
+                        hmo_name: 'Unknown HMO',
+                        plan_name: 'Unknown Plan',
+                        benefit_id: benefitId,
+                        user_requirement: userRequirement,
+                        published_limit: null,
+                        status: 'UNKNOWN',
+                        gap: null,
+                        gap_display: 'Not calculable',
+                        warnings: []
+                    };
+                }
+
+                const benefit = plan[benefitId];
+
+                let result = {
+                    hmo_name: plan.hmo_name || 'Unknown',
+                    plan_name: plan.plan_name || 'Unknown',
+                    benefit_id: benefitId,
+                    user_requirement: userRequirement,
+                    published_limit: null,
+                    status: 'UNKNOWN',
+                    gap: null,
+                    gap_display: 'Not calculable',
+                    warnings: []
+                };
+
+                if (benefit) {
+                    if (benefit.status === 'KNOWN' && benefit.amount_kobo) {
+                        const publishedLimit = benefit.amount_kobo / 100;
+                        result.published_limit = publishedLimit;
+                        result.status = 'KNOWN';
+
+                        if (publishedLimit >= userRequirement) {
+                            result.gap = 0;
+                            result.gap_display = 'No published gap';
+                        } else {
+                            result.gap = userRequirement - publishedLimit;
+                            result.gap_display = `₦${result.gap.toLocaleString('en-NG')}`;
+                        }
+                    } else if (benefit.status === 'NOT_COVERED') {
+                        result.status = 'NOT_COVERED';
+                        result.gap = userRequirement;
+                        result.gap_display = `₦${userRequirement.toLocaleString('en-NG')}`;
+                        result.warnings.push('This plan does not cover this benefit');
+                    } else if (benefit.status === 'UNLIMITED') {
+                        result.status = 'UNLIMITED';
+                        result.gap_display = 'Not calculable';
+                        result.warnings.push('Published as unlimited');
+                    } else {
+                        result.status = 'UNKNOWN';
+                        result.gap_display = 'Not calculable';
+                    }
+                } else {
+                    result.status = 'UNKNOWN';
+                    result.gap_display = 'Not calculable';
+                }
+
+                return result;
+            },
+
+            displayGapResults(results) {
+                const container = document.getElementById('gap-results-container');
+
+                if (!results || results.length === 0) {
+                    container.innerHTML = '<p style="color: var(--color-accent);">No results</p>';
+                    return;
+                }
+
+                let html = '<div style="display: grid; gap: var(--spacing-lg);">';
+
+                for (const result of results) {
+                    const statusColor = result.status === 'KNOWN' && result.gap > 0 ? 'var(--color-accent)' :
+                                       result.status === 'NOT_COVERED' ? 'var(--color-accent)' :
+                                       result.status === 'KNOWN' && result.gap === 0 ? 'var(--color-success)' :
+                                       'var(--color-warning)';
+
+                    html += `
+                        <div style="background: white; padding: var(--spacing-lg); border-radius: var(--radius-lg); border-left: 4px solid ${statusColor};">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--spacing-md);">
+                                <div>
+                                    <h3 style="font-size: var(--font-size-large); color: var(--color-primary); margin: 0 0 var(--spacing-xs) 0;">${result.hmo_name}</h3>
+                                    <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: 0;">${result.plan_name}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 1.5rem; font-weight: bold; color: ${statusColor};">${result.gap_display}</div>
+                                    <div style="font-size: var(--font-size-small); color: var(--color-text-light);">potential gap</div>
+                                </div>
+                            </div>
+
+                            <div style="background: var(--color-bg-alt); padding: var(--spacing-md); border-radius: var(--radius-md); margin-bottom: var(--spacing-md); font-size: var(--font-size-small); line-height: 1.8;">
+                                <div style="margin-bottom: var(--spacing-xs);"><strong>Your test:</strong> ₦${result.user_requirement.toLocaleString('en-NG')}</div>
+                                ${result.published_limit !== null ? `<div><strong>Published limit:</strong> ₦${result.published_limit.toLocaleString('en-NG')}</div>` : ''}
+                                ${result.status === 'UNKNOWN' ? `<div style="color: var(--color-warning);">Not publicly disclosed</div>` : ''}
+                                ${result.status === 'NOT_COVERED' ? `<div style="color: var(--color-accent);">Not covered</div>` : ''}
+                                ${result.status === 'UNLIMITED' ? `<div style="color: var(--color-warning);">Listed as unlimited</div>` : ''}
+                            </div>
+
+                            ${result.warnings.length > 0 ? `
+                                <div style="margin-bottom: var(--spacing-md);">
+                                    ${result.warnings.map(w => `<p style="background: #fff3cd; padding: var(--spacing-md); border-radius: var(--radius-md); color: var(--color-text); margin: 0 0 var(--spacing-sm) 0; font-size: var(--font-size-small); border-left: 3px solid var(--color-warning);">⚠️ ${w}</p>`).join('')}
+                                </div>
+                            ` : ''}
+
+                            <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: 0; line-height: 1.6; font-style: italic;">
+                                This compares your test amount with the published benefit limit. Actual costs depend on treatment, provider, authorization, exclusions, and policy conditions.
+                            </p>
+                        </div>
+                    `;
+                }
+
+                html += '</div>';
+                container.innerHTML = html;
             }
         };
 
