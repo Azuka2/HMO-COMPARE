@@ -1767,17 +1767,17 @@
             renderFearOpener() {
                 const fear = this.answers.biggest_fear;
                 const fearMap = {
-                    'surgery_gap': 'You said you'd most regret a surgery gap. Here's what each plan actually covers for major surgery — it's usually far less than the headline.',
-                    'hospital_gap': 'You said you'd most regret your hospital not being covered. Read the verification section before you pay — it's the part that protects you.',
-                    'limit_gap': 'You said you'd most regret still having to pay. We've calculated your potential gap on every plan below.',
-                    'cost_gap': 'You said you'd most regret still having to pay. We've calculated your potential gap on every plan below.',
-                    'maternity_gap': 'You said you'd most regret a maternity gap. Only some HMOs publish a maternity limit — we've flagged which.',
-                    'service_gap': 'You said you'd most regret poor support. We can't score customer service yet — no independent data exists. Here's how to test it yourself.',
-                    'emergency_gap': 'You said emergency speed matters most. We've noted plans with strong provider access and fast claim processing.',
-                    'drugs_gap': 'You said you'd most regret medication exclusions. We've noted what each plan publishes about drug coverage.'
+                    'surgery_gap': "You said you'd most regret a surgery gap. Here's what each plan actually covers for major surgery — it's usually far less than the headline.",
+                    'hospital_gap': "You said you'd most regret your hospital not being covered. Read the verification section before you pay — it's the part that protects you.",
+                    'limit_gap': "You said you'd most regret still having to pay. We've calculated your potential gap on every plan below.",
+                    'cost_gap': "You said you'd most regret still having to pay. We've calculated your potential gap on every plan below.",
+                    'maternity_gap': "You said you'd most regret a maternity gap. Only some HMOs publish a maternity limit — we've flagged which.",
+                    'service_gap': "You said you'd most regret poor support. We can't score customer service yet — no independent data exists. Here's how to test it yourself.",
+                    'emergency_gap': "You said emergency speed matters most. We've noted plans with strong provider access and fast claim processing.",
+                    'drugs_gap': "You said you'd most regret medication exclusions. We've noted what each plan publishes about drug coverage."
                 };
 
-                const opener = fearMap[fear] || 'Here's what makes sense for you.';
+                const opener = fearMap[fear] || "Here's what makes sense for you.";
                 return `
                     <div style="background: var(--color-primary-lighter); padding: var(--spacing-lg); border-radius: var(--radius-lg); margin-bottom: var(--spacing-xl); border-left: 4px solid var(--color-accent);">
                         <p style="font-size: var(--font-size-large); color: var(--color-primary); margin: 0; line-height: 1.6;">${opener}</p>
