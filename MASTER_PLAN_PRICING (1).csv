@@ -1,0 +1,100 @@
+hmo_id,hmo_name,plan_name,customer_type,min_lives,premium_ngn,overall_limit_ngn,provider_access,payment_model,surgery_major_ngn,maternity_ngn,evidence_tier,source_status,notes
+NG-HMO-001,Hygeia HMO,HyEssential,retail_individual,1.0,26515.0,,Category C-D,,,,B,VERIFIED_SNAPSHOT_2026-08-27,Snapshot-verified 2026-08-27 05:14-05:20 (URL+clock visible)
+NG-HMO-001,Hygeia HMO,HyBasic,retail_individual,1.0,66070.0,,Category C-D,,200000,100000,B,VERIFIED_SNAPSHOT_2026-08-27,Snapshot-verified 2026-08-27 05:14-05:20 (URL+clock visible)
+NG-HMO-001,Hygeia HMO,HyPrime,retail_individual,1.0,181380.0,,Category B-D,,300000,200000,B,VERIFIED_SNAPSHOT_2026-08-27,Snapshot-verified 2026-08-27 05:14-05:20 (URL+clock visible)
+NG-HMO-001,Hygeia HMO,HyPrime Plus,retail_individual,1.0,480380.0,,Category A-D,,400000,300000,B,VERIFIED_SNAPSHOT_2026-08-27,Snapshot-verified 2026-08-27 05:14-05:20 (URL+clock visible)
+NG-HMO-001,Hygeia HMO,HyPrime Exclusive,retail_individual,1.0,748660.0,,Category A-D,,600000,300000,B,VERIFIED_SNAPSHOT_2026-08-27,Snapshot-verified 2026-08-27 05:14-05:20 (URL+clock visible)
+NG-HMO-001,Hygeia HMO,Senior Exclusive,retail_senior,1.0,1115000.0,,Category A-D + Evercare/Reddington named,,1000000,,B,VERIFIED_SNAPSHOT_2026-08-27,Snapshot-verified 2026-08-27 05:14-05:20 (URL+clock visible)
+NG-HMO-002,Total Health Trust,NOT PUBLISHED,,,,,,,,,B,NOT_PUBLICLY_VERIFIED,No public retail schedule — P0-05 open
+NG-HMO-003,Clearline HMO,Kia Kia,retail_individual,1.0,3000.0,,Telemedicine only — NOT hospital,,,,B,VERIFY,Deck claims Band D hospital access — contradicts site (C-11)
+NG-HMO-003,Clearline HMO,Clear Value,retail_individual,1.0,80000.0,,Band C-D,,200000,,B,VERIFY,
+NG-HMO-003,Clearline HMO,Clear Advantage,retail_individual,1.0,250000.0,,Band B-D,,250000,,B,VERIFY,
+NG-HMO-003,Clearline HMO,Clear Elite,retail_individual,1.0,600000.0,,Band A (deck),,,,B,VERIFY,Deck says 650000 — C-10
+NG-HMO-003,Clearline HMO,Bronze,corporate,30.0,61525.0,1000000,,,250000,,B,VERIFY_BEFORE_PURCHASE,Source doc titled September 2025 (C-09)
+NG-HMO-003,Clearline HMO,Silver,corporate,30.0,81880.0,2000000,,,300000,,B,VERIFY_BEFORE_PURCHASE,C-09
+NG-HMO-003,Clearline HMO,Gold,corporate,30.0,117245.0,3000000,,,400000,,B,VERIFY_BEFORE_PURCHASE,C-09
+NG-HMO-003,Clearline HMO,Gold Plus,corporate,30.0,180775.0,3500000,,,500000,,B,VERIFY_BEFORE_PURCHASE,C-09
+NG-HMO-003,Clearline HMO,Platinum,corporate,30.0,345000.0,4000000,,,1000000,,B,VERIFY_BEFORE_PURCHASE,C-09
+NG-HMO-003,Clearline HMO,Platinum Plus,corporate,30.0,678500.0,5000000,,,1500000,,B,VERIFY_BEFORE_PURCHASE,C-09
+NG-HMO-003,Clearline HMO,SME Bronze,sme,11.0,84000.0,500000,,,150000,150000,FIRST_PARTY,VERIFY,Costs 36% MORE than corporate Bronze for HALF the limit (C-20)
+NG-HMO-003,Clearline HMO,SME Silver,sme,11.0,108000.0,700000,,,170000,190000,FIRST_PARTY,VERIFY,C-20
+NG-HMO-005,Mediplan Healthcare,Diaspora Basic Bronze,diaspora,1.0,,1200000,,,,,B,NOT_PUBLICLY_VERIFIED,Limits published; premium not
+NG-HMO-005,Mediplan Healthcare,Diaspora Basic Silver,diaspora,1.0,,2400000,,,,,B,NOT_PUBLICLY_VERIFIED,
+NG-HMO-005,Mediplan Healthcare,Diaspora Basic Gold,diaspora,1.0,,3600000,,,,,B,NOT_PUBLICLY_VERIFIED,
+NG-HMO-006,AIICO Multishield,Standard,retail_individual,1.0,64680.0,350000,Primary/Secondary,CAPITATION,NOT COVERED,NOT COVERED,B,CURRENT,Payment model disclosed on compare page
+NG-HMO-006,AIICO Multishield,Executive,retail_individual,1.0,109610.0,500000,,CAPITATION,NOT COVERED,250000,B,CURRENT,Major surgery NOT covered at 109610
+NG-HMO-006,AIICO Multishield,Super Executive,retail_individual,1.0,153667.0,1000000,,CAPITATION,400000,250000,B,CURRENT,
+NG-HMO-006,AIICO Multishield,Magnum,retail_individual,1.0,420000.0,10000000,,FEE_FOR_SERVICE,500000,400000,B,CURRENT,10m headline vs 500k surgery cap
+NG-HMO-006,AIICO Multishield,Magnum Concierge,retail_individual,1.0,1024800.0,50000000,,FEE_FOR_SERVICE,750000,400000,B,CURRENT,50m headline vs 750k surgery cap — ratio 66:1
+NG-HMO-009,IHMS,Individual Supreme Retail,retail_individual,1.0,488150.75,,,,,,B,PROMOTIONAL,Strikethrough pricing present (C-15)
+NG-HMO-009,IHMS,Individual Regular Retail,retail_individual,1.0,295409.51,,,,,,B,PROMOTIONAL,
+NG-HMO-009,IHMS,Individual Custom Retail,retail_individual,1.0,155501.94,,,,,,B,PROMOTIONAL,
+NG-HMO-009,IHMS,Standard Corporate,corporate,,62184.6,,,,,,B,PROMOTIONAL,
+NG-HMO-009,IHMS,SME Purple,sme,,44910.0,,,,,,B,PROMOTIONAL,
+NG-HMO-009,IHMS,Geriatric Custom,retail_senior,1.0,179000.0,,,,,,B,PROMOTIONAL,
+NG-HMO-012,SUNU Health,NOT PUBLISHED,,,,,,,,,B,NOT_PUBLICLY_VERIFIED,P0-05 open
+NG-HMO-027,Greenbay Healthcare,Access,retail_individual,1.0,,,Band 1,,,ANC only — CS excluded,B,NOT_PUBLICLY_VERIFIED,"""No Financial Limit to Cover"" (C-19)"
+NG-HMO-033,AXA Mansard Health,Bronze,retail_individual,1.0,89500.0,,1295 providers claimed,,250000,,B,CURRENT,Actual EC EasyCare list = 419 records (C-41)
+NG-HMO-033,AXA Mansard Health,Silver,retail_individual,1.0,132250.0,,1643 providers claimed,,300000,,B,CURRENT,
+NG-HMO-033,AXA Mansard Health,Gold,retail_individual,1.0,259225.0,,1888 providers claimed,,500000,,B,CURRENT,
+NG-HMO-033,AXA Mansard Health,Platinum,retail_individual,1.0,418515.0,,1972 providers claimed,,1000000,,B,CURRENT,
+NG-HMO-033,AXA Mansard Health,Platinum Plus,retail_individual,1.0,700375.0,,2004 providers claimed,,1000000,,B,CURRENT,Same surgery limit as Platinum at 68% more premium
+NG-HMO-033,AXA Mansard Health,Rhodium,retail_individual,1.0,1969780.0,,2004 providers claimed,,1000000,,B,CURRENT,Same surgery limit as Platinum at 371% more premium
+NG-HMO-036,Avon Healthcare,Life Plus,retail_individual,1.0,65429.0,,,,250000,NOT COVERED,B,CURRENT,Chronic disease management NOT covered
+NG-HMO-036,Avon Healthcare,Premium Life,retail_individual,1.0,103332.0,,,,350000,250000,B,CURRENT,
+NG-HMO-036,Avon Healthcare,Boss Life,retail_individual,1.0,208142.0,,,,750000,400000,B,CURRENT,
+NG-HMO-036,Avon Healthcare,Family of 6,retail_family,6.0,307516.0,,,,,,B,CURRENT,
+NG-HMO-036,Avon Healthcare,Couple,retail_family,2.0,130858.0,,,,,,B,CURRENT,
+NG-HMO-043,Novo Health Africa,NOT PUBLISHED,,,,,SIP/DIP/VIP,,,,B,NOT_PUBLICLY_VERIFIED,2080 providers extracted; pricing not
+NG-HMO-052,Leadway Health,Strawberry,retail_individual,1.0,104997.75,,Nigeria,,,,B,CURRENT,
+NG-HMO-052,Leadway Health,Cranberry,retail_individual,1.0,147790.5,,Nigeria,,,,B,CURRENT,
+NG-HMO-052,Leadway Health,Blueberry,retail_individual,1.0,254826.0,,Nigeria+India,,,,B,CURRENT,
+NG-HMO-052,Leadway Health,Blackberry,retail_individual,1.0,585975.0,,Nigeria+India+Africa,,,,B,CURRENT,
+NG-HMO-052,Leadway Health,Raspberry,retail_individual,1.0,954720.0,,Nigeria+India+Africa,,,,B,CURRENT,
+NG-HMO-052,Leadway Health,Senior Cranberry,retail_senior,1.0,,,,,,,B,NOT_PUBLICLY_VERIFIED,Found only in dropdown — P1-23
+NG-HMO-052,Leadway Health,Senior Blueberry,retail_senior,1.0,,,,,,,B,NOT_PUBLICLY_VERIFIED,P1-23
+NG-HMO-052,Leadway Health,Senior Blackberry,retail_senior,1.0,,,,,,,B,NOT_PUBLICLY_VERIFIED,P1-23
+NG-HMO-052,Leadway Health,Senior Raspberry,retail_senior,1.0,,,,,,,B,NOT_PUBLICLY_VERIFIED,P1-23
+NG-HMO-054,Reliance HMO,Red Beryl,retail_individual,1.0,92340.0,1200000,Tier 4,,150000,,B,POTENTIALLY_STALE,Page modified 2025-02-03. Major surgery at month 15
+NG-HMO-054,Reliance HMO,Alexandrite,retail_individual,1.0,117420.0,1800000,Tier 3,,300000,,B,POTENTIALLY_STALE,Major surgery at month 15
+NG-HMO-054,Reliance HMO,Diamond,retail_individual,1.0,172140.0,3000000,Tier 2,,500000,,B,POTENTIALLY_STALE,3m headline vs 500k surgery = 16.7%
+NG-HMO-054,Reliance HMO,SB Red Beryl,sme,3.0,68400.0,2000000,,,,,B,CURRENT,1407+ providers claimed
+NG-HMO-054,Reliance HMO,SB Alexandrite,sme,3.0,103300.0,3500000,,,,,B,CURRENT,2448+ providers claimed
+NG-HMO-054,Reliance HMO,SB Diamond,sme,3.0,177700.0,5000000,,,,,B,CURRENT,Resolves C-14 corrupt value
+NG-HMO-054,Reliance HMO,SB Red Diamond,sme,3.0,268850.0,7000000,,,,,B,CURRENT,2746+ providers claimed
+NG-HMO-058,Bastion Health,Jade,retail_individual,1.0,32380.0,500000,,,,,B,CURRENT,Publisher of a self-ranking Top 5 article
+NG-HMO-058,Bastion Health,Beryl,retail_individual,1.0,67755.0,750000,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Ruby,retail_individual,1.0,98055.0,1000000,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Sapphire,retail_individual,1.0,204415.0,1500000,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Emerald,retail_individual,1.0,218365.0,2500000,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Diamond,retail_individual,1.0,344755.0,3500000,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Crimson,retail_individual,1.0,574220.0,5000000,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Smart Lite,sme,,45080.0,500000,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Smart Care,sme,,62745.0,750000,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Smart Plus,sme,,72520.0,1000000,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Smart Pearl,sme,,84550.0,2000000,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Standard,corporate,,53539.0,,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Essential,corporate,,67733.0,,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Bloom,corporate,,91257.0,,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Classic,corporate,,163866.0,,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Prime,corporate,,285710.0,,,,,,B,CURRENT,
+NG-HMO-058,Bastion Health,Vintage,corporate,,580239.0,,,,,,B,CURRENT,
+NG-HMO-061,DOT HMO,NOT PUBLISHED,,,,,Coral/Emerald/Beryl,,,,B,NOT_PUBLICLY_VERIFIED,1902 providers self-reported
+NG-HMO-077,NEM Health,Retail Lotus,retail_individual,1.0,88300.0,,Tier 1,,,,B,CURRENT,Outpatient 200k / inpatient 360k
+NG-HMO-077,NEM Health,Retail Tulip,retail_individual,1.0,123400.0,,Tier 1-2,,,,B,CURRENT,
+NG-HMO-077,NEM Health,Retail Hazel,retail_individual,1.0,263800.0,,Tier 1-3,,,,B,CURRENT,
+NG-HMO-077,NEM Health,Retail Ivy,retail_individual,1.0,439400.0,,Tier 1-4,,,,B,CURRENT,
+NG-HMO-077,NEM Health,Retail Marigold,retail_individual,1.0,790500.0,,Tier 1-4 + Africa I,,,,B,CURRENT,
+NG-HMO-077,NEM Health,Corporate Lotus,corporate,,,UNLIMITED,Tier 1 + Africa I,,"""approved limits"" undisclosed",,B,CURRENT,C-42 unlimited vs approved limits
+NG-HMO-077,NEM Health,Corporate Marigold Plus,corporate,,,UNLIMITED,Tier 1-5+ ,,"""approved limits"" undisclosed",,B,CURRENT,C-42
+NG-HMO-077,NEM Health,HomeReach Tulip,diaspora,1.0,,3000000,Tier 1-2,,MINOR ONLY 500000,,B,CURRENT,Only minor surgery specified
+NG-HMO-077,NEM Health,HomeReach Hazel,diaspora,1.0,,4000000,Tier 1-3,,MINOR ONLY 1000000,,B,CURRENT,
+NG-HMO-077,NEM Health,HomeReach Ivy,diaspora,1.0,,6000000,Tier 1-4,,MINOR ONLY 2500000,,B,CURRENT,Minor surgery cap exceeds Reliance Diamond major surgery 5x
+NG-HMO-001,Hygeia HMO,HyBasic Family,retail_family,,292400.0,,Category C-D,,200000,100000.0,B,VERIFIED_SNAPSHOT_2026-08-27,Family size still not stated (P0-10)
+NG-HMO-001,Hygeia HMO,HyPrime Family,retail_family,,916710.0,,Category B-D,,300000,200000.0,B,VERIFIED_SNAPSHOT_2026-08-27,Family size still not stated (P0-10)
+NG-HMO-001,Hygeia HMO,Senior Mini,retail_senior,1.0,230000.0,,Category C-D,,250000,,B,VERIFIED_SNAPSHOT_2026-08-27,Inpatient 1m / outpatient 500k
+NG-HMO-001,Hygeia HMO,Senior Midi,retail_senior,1.0,452760.0,,Category B-D,,500000,,B,VERIFIED_SNAPSHOT_2026-08-27,Inpatient 1.6m / outpatient 1m
+NG-HMO-001,Hygeia HMO,Senior Premium,retail_senior,1.0,900000.0,,Category A-D,,1000000,,B,VERIFIED_SNAPSHOT_2026-08-27,Inpatient 3.35m
+NG-HMO-001,Hygeia HMO,HyStarter,sme,5.0,60385.0,,Category C-D,,250000,,B,VERIFIED_SNAPSHOT_2026-08-27,Min 5 persons
+NG-HMO-001,Hygeia HMO,HyStarter Plus,sme,5.0,142290.0,,Category B-D2,,350000,,B,VERIFIED_SNAPSHOT_2026-08-27,D2 subdivision CONFIRMED by snapshot
+NG-HMO-001,Hygeia HMO,HyStarter Premium,sme,5.0,300835.0,,Category B-D2,,350000,,B,VERIFIED_SNAPSHOT_2026-08-27,"111% more than Plus, same tier/min-lives — value trap flag stands"

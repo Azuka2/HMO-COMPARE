@@ -1,0 +1,196 @@
+{
+  "$schema": "RECOMMENDATION_OBJECT_V1",
+  "_comment": "Contract between the deterministic matching engine and the presentation layer. Every field is produced by the engine. Claude may author ONLY the fields marked llm_authored:true, and may never alter rank, match_score, or the candidate set.",
+
+  "meta": {
+    "session_id": "sess_2026-08-27_a91f",
+    "generated_at": "2026-08-27T06:12:00+01:00",
+    "matching_engine_version": "MATCHING_ENGINE_V1",
+    "priority_model_version": "PRIORITY_MODEL_V1",
+    "dataset_version": "MASTER_PLAN_PRICING_2026-08-27",
+    "plans_evaluated": 95,
+    "plans_after_filters": 19,
+    "hmos_fully_comparable": 6,
+    "hmos_not_comparable": 10
+  },
+
+  "user_profile": {
+    "profile_label": "Family-protection buyer",
+    "plain_language": "Covering 4 people in Lagos on about ₦600,000 a year. Surgery and maternity are critical, hospital choice matters a lot, and you'd rather pay more than risk a big bill.",
+    "customer_type": "family",
+    "lives": 4,
+    "state": "Lagos",
+    "budget_total_kobo": 60000000,
+    "budget_per_person_kobo": 15000000,
+    "biggest_fear": "surgery_gap",
+    "weights_applied": {
+      "surgery": 0.286, "maternity": 0.286, "hospital_access": 0.286, "price": 0.143
+    },
+    "dimensions_collected_but_not_scored": ["drugs", "diagnostics", "digital", "wellness"],
+    "not_scored_reason": "No public benefit data exists for these across the plans we hold."
+  },
+
+  "recommendations": [
+    {
+      "rank": 1,
+      "plan_id": "NG-HMO-001-hyprime-plus-retail_individual",
+      "hmo_id": "NG-HMO-001",
+      "hmo_name": "Hygeia HMO",
+      "plan_name": "HyPrime Plus",
+      "match_score": 88,
+      "match_score_note": "Scored on 4 of your 8 stated priorities.",
+
+      "price": {
+        "amount_kobo": 48038000,
+        "display": "₦480,380 per person per year",
+        "estimated_total_display": "About ₦1,921,520 for 4 people",
+        "over_budget": true,
+        "over_budget_note": "This is above the ₦600,000 you set. We're showing it because it scored highest on surgery and hospital access.",
+        "status": "VERIFIED_SNAPSHOT",
+        "status_label": "Verified 27 August 2026",
+        "source_url": "https://hygeiahmo.com/plan-list/",
+        "retrieved_date": "2026-08-27",
+        "snapshot_ref": "hygeia_plan-list_2026-08-27.png"
+      },
+
+      "relevant_benefits": [
+        {"label": "Major surgery", "status": "KNOWN", "display": "₦400,000", "matched_priority": "surgery"},
+        {"label": "Maternity", "status": "KNOWN", "display": "₦300,000", "matched_priority": "maternity"},
+        {"label": "Hospital access", "status": "KNOWN", "display": "Category A–D — includes top-tier hospitals", "matched_priority": "hospital_access"},
+        {"label": "Inpatient limit", "status": "KNOWN", "display": "₦2,500,000"},
+        {"label": "Outpatient limit", "status": "KNOWN", "display": "₦1,000,000"}
+      ],
+
+      "benefits_you_asked_about_we_could_not_check": [
+        {"label": "Medication cover", "status": "UNKNOWN", "display": "Not published"},
+        {"label": "Scans (MRI/CT)", "status": "UNKNOWN", "display": "Not published"},
+        {"label": "Dental & optical", "status": "UNKNOWN", "display": "Not published"}
+      ],
+
+      "provider_access": {
+        "system": "CATEGORY",
+        "tiers": ["A", "B", "C", "D"],
+        "display": "Category A–D providers",
+        "named_facilities": [],
+        "location_matched": false,
+        "caveat": "We can't yet confirm which hospitals near you in Lagos accept this exact plan. Call before you pay."
+      },
+
+      "warnings": [
+        {"severity": "high", "type": "OVER_BUDGET",
+         "text": "At ₦480,380 per person, covering 4 people costs roughly ₦1.92m — more than triple your budget."},
+        {"severity": "medium", "type": "SURGERY_RATIO",
+         "text": "The ₦400,000 surgery limit is modest next to the ₦2,500,000 inpatient limit. Inpatient cover and surgery cover are not the same thing."},
+        {"severity": "low", "type": "FAMILY_SIZE_UNKNOWN",
+         "text": "Hygeia's family plans don't state how many people they cover, so we've priced this per person."}
+      ],
+
+      "potential_gap": {
+        "benefit": "surgery",
+        "user_requirement_kobo": 200000000,
+        "plan_limit_kobo": 40000000,
+        "gap_kobo": 160000000,
+        "display": "You said you'd want ₦2,000,000 of surgical protection. This plan covers ₦400,000. Potential gap: ₦1,600,000.",
+        "disclaimer": "This is an analytical estimate based on published limits — not a prediction of what you would actually pay."
+      },
+
+      "evidence_confidence": {
+        "level": "MEDIUM",
+        "score": 0.68,
+        "drivers": [
+          "Price verified against a dated screenshot — our strongest evidence",
+          "Surgery and maternity limits published",
+          "No provider-level confirmation for your area",
+          "4 of your 8 priorities could not be scored"
+        ],
+        "note": "Confidence describes our evidence, not the quality of this plan."
+      },
+
+      "data_freshness": {
+        "premium_checked": "2026-08-27",
+        "benefits_checked": "2026-08-27",
+        "provider_data": "Not available for this HMO",
+        "overall": "CURRENT"
+      },
+
+      "why_it_matches": {
+        "llm_authored": true,
+        "_constraint": "Claude writes 3-5 plain-language reasons from THIS object only. No new facts. No comparative claims about HMOs not in this result set.",
+        "reasons": []
+      },
+
+      "gaps": {
+        "llm_authored": true,
+        "_constraint": "Claude restates warnings + potential_gap + unscored dimensions in plain language. Never minimises.",
+        "text": ""
+      },
+
+      "verification_questions": [
+        "Does [my hospital] currently accept Hygeia HyPrime Plus — not just Hygeia?",
+        "What exactly is covered under the ₦400,000 major surgery limit, and what falls outside it?",
+        "Is there a waiting period before surgery or maternity cover starts?",
+        "What is the total annual premium for 4 people, and is that per person or combined?",
+        "Which of my medications are on your formulary?"
+      ],
+
+      "audit": {
+        "dimensions_scored": ["surgery", "maternity", "hospital_access", "price"],
+        "dimensions_excluded": [
+          {"dimension": "drugs", "reason": "NO_DATA"},
+          {"dimension": "diagnostics", "reason": "NO_DATA"},
+          {"dimension": "digital", "reason": "NO_DATA"},
+          {"dimension": "wellness", "reason": "NO_DATA"}
+        ],
+        "raw_scores": {"surgery": 20, "maternity": 60, "hospital_access": 100, "price": 50},
+        "penalties_applied": [],
+        "filters_passed": ["data_eligibility", "customer_type", "budget_soft", "critical_benefit"],
+        "tie_break_used": null,
+        "source_is_self_interested": false
+      }
+    }
+  ],
+
+  "alternatives": [
+    {
+      "rank": 4,
+      "plan_id": "NG-HMO-054-alexandrite-retail_individual",
+      "hmo_name": "Reliance HMO",
+      "plan_name": "Alexandrite",
+      "match_score": 71,
+      "flag": "FALSE_ECONOMY_CANDIDATE",
+      "flag_text": "₦117,420 versus Red Beryl's ₦92,340 — 27% more money for double the surgery limit (₦300,000 vs ₦150,000). If surgery protection is your priority, the cheaper plan may be the more expensive choice.",
+      "critical_warning": "Major surgery cover on Reliance plans does not begin until month 15 of your policy."
+    }
+  ],
+
+  "could_not_compare": {
+    "headline": "6 HMOs don't publish enough for us to compare them",
+    "explanation": "These organisations don't publish retail premiums or benefit limits publicly. That's not evidence they're bad — it means we can't check. Here's what to ask them.",
+    "hmos": [
+      {"hmo_name": "Total Health Trust", "known_facts": ["Claims 1,700+ providers", "Tangerine-owned since January 2023"]},
+      {"hmo_name": "SUNU Health", "known_facts": ["Operating since 1998", "Part of SUNU Group, 17+ African countries"]},
+      {"hmo_name": "DOT HMO", "known_facts": ["Directory self-reports 1,902 providers"]},
+      {"hmo_name": "Greenbay Healthcare", "known_facts": ["Advertises 'No Financial Limit to Cover' — ask what that means per service"]},
+      {"hmo_name": "Novo Health Africa", "known_facts": ["2,080 providers listed publicly with LGA detail"]},
+      {"hmo_name": "Mediplan Healthcare", "known_facts": ["Publishes diaspora plan limits but no premiums"]}
+    ],
+    "what_to_ask": [
+      "What is the annual premium for my exact family size?",
+      "What is the major surgery limit — the actual figure, not the overall limit?",
+      "Which hospitals near me accept this specific plan today?",
+      "What waiting periods apply before I can use surgery or maternity cover?"
+    ]
+  },
+
+  "disclosure": {
+    "required": true,
+    "text": "HMO Blueprint Nigeria is built by a team member who works in corporate partnerships at ClearlineHMO, one of the organisations analysed here. The same methodology applies to every HMO, our ranking logic is tested with HMO names hidden, and ClearlineHMO receives no advantage in scoring.",
+    "clearline_in_results": false
+  },
+
+  "global_caveats": [
+    "We scored 4 of the 8 things you told us mattered. The rest aren't published by these HMOs.",
+    "We can't yet match plans to hospitals near you. Always call before you pay.",
+    "Match percentages reflect fit against what we could verify — not a judgement of overall quality."
+  ]
+}
