@@ -163,6 +163,22 @@ function handleDataset(req, res) {
 }
 
 /**
+ * Route: GET /api/version
+ * Return deployment version info for diagnostics
+ */
+function handleVersion(req, res) {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(
+    JSON.stringify({
+      app: 'HMO Blueprint Nigeria',
+      version: 'hmo-blueprint-production',
+      environment: 'production',
+      timestamp: new Date().toISOString()
+    })
+  );
+}
+
+/**
  * HTTP Server
  */
 const server = http.createServer(async (req, res) => {
@@ -187,6 +203,8 @@ const server = http.createServer(async (req, res) => {
     handleMatch(req, res);
   } else if (pathname === '/api/dataset' && req.method === 'GET') {
     handleDataset(req, res);
+  } else if (pathname === '/api/version' && req.method === 'GET') {
+    handleVersion(req, res);
   } else {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('404 Not Found');
