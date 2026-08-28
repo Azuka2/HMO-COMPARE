@@ -744,6 +744,151 @@
             }
         }
 
+        /* Footer */
+        footer {
+            background: var(--color-bg-alt);
+            border-top: 1px solid var(--color-border);
+            margin-top: var(--spacing-2xl);
+            padding: var(--spacing-xl) var(--spacing-md);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                padding: 0 var(--spacing-lg);
+            }
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        @media (min-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 2fr 1fr;
+                gap: var(--spacing-xl);
+            }
+        }
+
+        .footer-section h3 {
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .footer-section p {
+            font-size: var(--font-size-small);
+            color: var(--color-text-light);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .founder-info {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .founder-name {
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .founder-title {
+            font-size: var(--font-size-small);
+            color: var(--color-text-light);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .social-links {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-border);
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            font-weight: 600;
+            font-size: var(--font-size-small);
+        }
+
+        .social-link:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .resource-cta {
+            background: var(--color-primary-lighter);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+        }
+
+        .resource-cta h4 {
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .resource-cta p {
+            font-size: var(--font-size-small);
+            color: var(--color-text);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .resource-cta a {
+            display: inline-block;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: var(--font-size-small);
+        }
+
+        .resource-cta a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-divider {
+            border-top: 1px solid var(--color-border);
+            padding-top: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+            font-size: var(--font-size-small);
+            color: var(--color-text-light);
+            text-align: center;
+        }
+
+        .founder-disclosure {
+            background: rgba(26, 54, 93, 0.05);
+            border-left: 3px solid var(--color-primary);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin: var(--spacing-lg) 0;
+            font-size: var(--font-size-small);
+            line-height: 1.6;
+        }
+
         /* Responsive */
         @media (max-width: 480px) {
             .landing-headline {
@@ -796,16 +941,22 @@
 
                 <div class="disclosure">
                     <div class="disclosure-title">📋 What we cover</div>
-                    <p class="disclosure-text">95 plans from 16 HMOs. Six HMOs have enough public data to compare properly. Ten don't, and we'll show you which.</p>
+                    <p class="disclosure-text">86 plans from 16 HMOs. Six HMOs have enough public data to compare properly. Ten don't, and we'll show you which.</p>
 
                     <div class="disclosure-title" style="margin-top: var(--spacing-lg);">🔗 Where our numbers come from</div>
-                    <p class="disclosure-text">Every price links to its source and the date we checked.</p>
+                    <p class="disclosure-text">Every price links to its source and the date we checked. The ranking algorithm is fully deterministic — no machine learning, no randomness. Same input always produces identical output.</p>
 
                     <div class="disclosure-title" style="margin-top: var(--spacing-lg);">👤 Who built this</div>
                     <div class="disclosure-highlight">
+                        <strong>Created by Azuka Orumgbe</strong><br>
+                        Health Insurance Intelligence | HMO Research | Data & AI<br><br>
                         This tool was built by someone who works in corporate partnerships at Clearline HMO. Clearline appears in our recommendations when it ranks highly, just like every other HMO.
                     </div>
                     <p class="disclosure-text">We use the same evaluation framework for every HMO. Clearline receives no special scoring advantage. The ranking is purely based on how well each plan matches your stated priorities.</p>
+
+                    <p class="disclosure-text" style="margin-top: var(--spacing-md); font-style: italic;">
+                        Want to use HMO intelligence tools at your organization? <strong>Explore <a href="https://wellnessos.com.ng" target="_blank" style="color: var(--color-accent); text-decoration: none;">WellnessOS</a></strong> — a complete wellness and benefits administration system for Nigerian companies.
+                    </p>
                 </div>
 
                 <div class="cards">
@@ -874,7 +1025,85 @@
         </div>
     </main>
 
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <div class="founder-info">
+                        <div class="founder-name">Azuka Orumgbe</div>
+                        <div class="founder-title">Health Insurance Intelligence | HMO Research | Data & AI</div>
+                    </div>
+                    <p>Building transparent, data-driven health insurance comparison tools for Nigeria. HMO Blueprint analyzes 86 plans using a fully deterministic ranking algorithm.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/azuka-orumgbe" target="_blank" class="social-link" title="LinkedIn">in</a>
+                        <a href="https://wa.me/2348180100100" target="_blank" class="social-link" title="WhatsApp">wa</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resource-cta">
+                <h4>Use HMO Intelligence at Scale</h4>
+                <p>Managing employee benefits at your organization? WellnessOS brings transparent HMO comparison and benefits administration to your workplace.</p>
+                <a href="https://wellnessos.com.ng" target="_blank">Explore WellnessOS →</a>
+            </div>
+
+            <div class="founder-disclosure">
+                <strong>Transparency:</strong> HMO Blueprint is built by someone at Clearline HMO. Every HMO receives the same evaluation framework. Clearline ranks when it scores highly, never by default.
+            </div>
+
+            <div class="footer-divider">
+                © 2026 HMO Blueprint Nigeria. Analysis of public data. <a href="#" style="color: var(--color-text-light); text-decoration: none;">Privacy</a> · <a href="#" style="color: var(--color-text-light); text-decoration: none;">Terms</a>
+            </div>
+        </div>
+    </footer>
+
     <script>
+        /**
+         * Founder Configuration
+         * Centralized configuration for founder branding and distribution
+         */
+        const FOUNDER_CONFIG = {
+            name: 'Azuka Orumgbe',
+            displayTitle: 'Health Insurance Intelligence | HMO Research | Data & AI',
+            shortBio: 'Building health insurance intelligence tools for Nigerian individuals and organizations.',
+            social: {
+                linkedin: 'https://linkedin.com/in/azuka-orumgbe',
+                whatsapp: 'https://wa.me/2348180100100'
+            },
+            primaryResource: {
+                name: 'Workplace Wellness Operating System',
+                description: 'Complete wellness and benefits administration system for Nigerian organizations',
+                url: 'https://wellnessos.com.ng',
+                cta: 'Explore WellnessOS'
+            },
+            attribution: {
+                enabled: true,
+                landingText: 'Created by Azuka Orumgbe',
+                resultsText: 'This analysis was created by Azuka Orumgbe, a health insurance researcher.'
+            },
+            authority: {
+                plansAnalyzed: 86,
+                hmosAnalyzed: 16,
+                hmosWithData: 6,
+                questionsAsked: 22,
+                usesAI: false,
+                isDeterministic: true,
+                numberOfRankingStages: 8,
+                showsGaps: true,
+                showsPreference: true
+            },
+            touchpoints: {
+                landing: { showFounderCredit: true, credibilityLevel: 'light' },
+                assessment: { showFounderCredit: false, credibilityLevel: 'none' },
+                results: { showFounderCredit: true, showSocialLinks: true, credibilityLevel: 'moderate' },
+                footer: { showFounderCredit: true, showSocialLinks: true, credibilityLevel: 'light' }
+            }
+        };
+
         const QUESTIONS = [
             { id: 'Q1', group: 1, title: 'Who are we finding cover for?', type: 'single-select', options: [{ text: 'Just me', value: 'individual' }, { text: 'Me and my partner', value: 'couple' }, { text: 'My family', value: 'family' }, { text: 'My parents / older relatives', value: 'parents' }, { text: 'My staff', value: 'corporate' }], key: 'customer_type' },
             { id: 'Q2', group: 1, title: 'Which state do you live in?', type: 'single-select', helper: 'We use this to tell you what to check about hospitals near you.', options: [{ text: 'Abia', value: 'Abia' }, { text: 'Adamawa', value: 'Adamawa' }, { text: 'Akwa Ibom', value: 'Akwa Ibom' }, { text: 'Anambra', value: 'Anambra' }, { text: 'Bauchi', value: 'Bauchi' }, { text: 'Bayelsa', value: 'Bayelsa' }, { text: 'Benue', value: 'Benue' }, { text: 'Borno', value: 'Borno' }, { text: 'Cross River', value: 'Cross River' }, { text: 'Delta', value: 'Delta' }, { text: 'Ebonyi', value: 'Ebonyi' }, { text: 'Edo', value: 'Edo' }, { text: 'Ekiti', value: 'Ekiti' }, { text: 'Enugu', value: 'Enugu' }, { text: 'FCT', value: 'FCT' }, { text: 'Gombe', value: 'Gombe' }, { text: 'Imo', value: 'Imo' }, { text: 'Jigawa', value: 'Jigawa' }, { text: 'Kaduna', value: 'Kaduna' }, { text: 'Kano', value: 'Kano' }, { text: 'Katsina', value: 'Katsina' }, { text: 'Kebbi', value: 'Kebbi' }, { text: 'Kogi', value: 'Kogi' }, { text: 'Kwara', value: 'Kwara' }, { text: 'Lagos', value: 'Lagos' }, { text: 'Nasarawa', value: 'Nasarawa' }, { text: 'Niger', value: 'Niger' }, { text: 'Ogun', value: 'Ogun' }, { text: 'Ondo', value: 'Ondo' }, { text: 'Osun', value: 'Osun' }, { text: 'Oyo', value: 'Oyo' }, { text: 'Plateau', value: 'Plateau' }, { text: 'Rivers', value: 'Rivers' }, { text: 'Sokoto', value: 'Sokoto' }, { text: 'Taraba', value: 'Taraba' }, { text: 'Yobe', value: 'Yobe' }, { text: 'Zamfara', value: 'Zamfara' }], key: 'state' },
@@ -1242,8 +1471,37 @@
             },
 
             completeAssessment() {
-                alert('Assessment complete! Priority profile ready.\n\nNext: Sprint 5 (Priority confirmation) → Sprint 6 (Results page)');
+                // User confirmed profile - ready for recommendations (Sprint 5/6)
+                alert('Assessment complete! Priority profile ready.\n\nNext: Your personalized plan recommendations');
                 this.navigate('landing');
+            },
+
+            /**
+             * Show founder-related information at a touchpoint
+             * Used for authority building without being intrusive
+             */
+            showFounderPresence(touchpoint) {
+                const config = FOUNDER_CONFIG.touchpoints[touchpoint];
+                if (!config || !config.showFounderCredit) return;
+
+                // Log that founder presence is shown (for analytics)
+                console.log('Founder presence shown at:', touchpoint);
+            },
+
+            /**
+             * Get founder authority message
+             * Context-aware credibility indicators
+             */
+            getFounderAuthorityMessage() {
+                return `Analysis of ${FOUNDER_CONFIG.authority.plansAnalyzed} plans from ${FOUNDER_CONFIG.authority.hmosAnalyzed} HMOs. Fully deterministic ranking.`;
+            },
+
+            /**
+             * Get primary resource (WellnessOS) call-to-action
+             * Shown to users after they've invested time
+             */
+            getPrimaryResourceCTA() {
+                return FOUNDER_CONFIG.primaryResource;
             }
         };
 
