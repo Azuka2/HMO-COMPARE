@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMO Blueprint Nigeria — Which health plan makes sense for you?</title>
+    <style>
+        :root {
+            --color-primary: #1a365d;
+            --color-primary-light: #2d5a8c;
+            --color-primary-lighter: #eef2f5;
+            --color-accent: #e74c3c;
+            --color-success: #27ae60;
+            --color-warning: #f39c12;
+            --color-text: #2c3e50;
+            --color-text-light: #7f8c8d;
+            --color-border: #ecf0f1;
+            --color-bg: #ffffff;
+            --color-bg-alt: #f8f9fa;
+
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --font-size-base: 16px;
+            --font-size-small: 14px;
+            --font-size-large: 18px;
+            --font-size-xl: 24px;
+            --font-size-2xl: 32px;
+            --font-size-3xl: 40px;
+
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-text: #ecf0f1;
+                --color-text-light: #bdc3c7;
+                --color-border: #34495e;
+                --color-bg: #1a1a1a;
+                --color-bg-alt: #2d2d2d;
+                --color-primary-lighter: #1a2a3a;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: var(--font-size-base);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: var(--font-family);
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            line-height: 1.5;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: var(--spacing-lg);
+            }
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: white;
+            padding: var(--spacing-lg) var(--spacing-md);
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--spacing-md);
+        }
+
+        @media (min-width: 768px) {
+            .header-content {
+                padding: 0 var(--spacing-lg);
+            }
+        }
+
+        .logo {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-sub {
+            font-size: var(--font-size-small);
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* Landing Page */
+        .landing {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: var(--spacing-xl) var(--spacing-md);
+        }
+
+        @media (min-width: 768px) {
+            .landing {
+                padding: var(--spacing-2xl) var(--spacing-lg);
+            }
+        }
+
+        .landing-hero {
+            max-width: 720px;
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .landing-headline {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-primary);
+        }
+
+        @media (min-width: 768px) {
+            .landing-headline {
+                font-size: var(--font-size-3xl);
+                margin-bottom: var(--spacing-lg);
+            }
+        }
+
+        .landing-subheading {
+            font-size: var(--font-size-large);
+            line-height: 1.6;
+            color: var(--color-text-light);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .landing-cta {
+            display: inline-block;
+            background: var(--color-accent);
+            color: white;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-large);
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-md);
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .landing-cta:hover {
+            background: darken(#e74c3c, 10%);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .landing-cta:active {
+            transform: translateY(0);
+        }
+
+        /* Disclosure */
+        .disclosure {
+            max-width: 720px;
+            margin-top: var(--spacing-2xl);
+            padding: var(--spacing-lg);
+            background: var(--color-bg-alt);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+        }
+
+        .disclosure-title {
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            font-size: var(--font-size-large);
+            color: var(--color-primary);
+        }
+
+        .disclosure-text {
+            font-size: var(--font-size-small);
+            line-height: 1.6;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .disclosure-text:last-child {
+            margin-bottom: 0;
+        }
+
+        .disclosure-highlight {
+            background: rgba(231, 76, 60, 0.1);
+            padding: var(--spacing-md);
+            border-left: 3px solid var(--color-accent);
+            border-radius: var(--radius-sm);
+            margin: var(--spacing-md) 0;
+            font-weight: 600;
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+
+        @media (min-width: 768px) {
+            .cards {
+                grid-template-columns: repeat(3, 1fr);
+                gap: var(--spacing-xl);
+            }
+        }
+
+        .card {
+            background: var(--color-bg-alt);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            transition: all var(--transition-base);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+            transform: translateY(-4px);
+        }
+
+        .card-title {
+            font-size: var(--font-size-large);
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-primary);
+        }
+
+        .card-text {
+            font-size: var(--font-size-small);
+            line-height: 1.6;
+            color: var(--color-text-light);
+        }
+
+        /* Buttons */
+        button {
+            font-family: inherit;
+        }
+
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            transition: all var(--transition-fast);
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Screen Display */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn var(--transition-base);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--color-border);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .landing-headline {
+                font-size: var(--font-size-xl);
+            }
+
+            .landing-subheading {
+                font-size: var(--font-size-base);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div>HMO Blueprint</div>
+                <div class="logo-sub">Nigeria</div>
+            </div>
+        </div>
+    </header>
+
+    <main id="app">
+        <!-- Landing Screen -->
+        <div id="screen-landing" class="screen active">
+            <div class="landing">
+                <div class="landing-hero">
+                    <h1 class="landing-headline">Which health plan actually makes sense for you?</h1>
+                    <p class="landing-subheading">Answer 22 short questions. We'll show you what each plan really covers — including the parts they don't put on the poster.</p>
+                    <button class="landing-cta" onclick="app.navigate('assessment')">Start — takes 4 minutes</button>
+                </div>
+
+                <div class="disclosure">
+                    <div class="disclosure-title">📋 What we cover</div>
+                    <p class="disclosure-text">95 plans from 16 HMOs. Six HMOs have enough public data to compare properly. Ten don't, and we'll show you which.</p>
+
+                    <div class="disclosure-title" style="margin-top: var(--spacing-lg);">🔗 Where our numbers come from</div>
+                    <p class="disclosure-text">Every price links to its source and the date we checked.</p>
+
+                    <div class="disclosure-title" style="margin-top: var(--spacing-lg);">👤 Who built this</div>
+                    <div class="disclosure-highlight">
+                        This tool was built by someone who works in corporate partnerships at Clearline HMO. Clearline appears in our recommendations when it ranks highly, just like every other HMO.
+                    </div>
+                    <p class="disclosure-text">We use the same evaluation framework for every HMO. Clearline receives no special scoring advantage. The ranking is purely based on how well each plan matches your stated priorities.</p>
+                </div>
+
+                <div class="cards">
+                    <div class="card">
+                        <div class="card-title">✅ Verified Data</div>
+                        <p class="card-text">14 plans snapshot-verified with dated screenshots. 52 from official HMO websites.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">💡 Your Priorities</div>
+                        <p class="card-text">We weight what matters to YOU, not what HMOs want to sell.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">⚠️ Honest Gaps</div>
+                        <p class="card-text">You'll see what we couldn't check — maternity, drugs, dental — not hidden.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assessment Screen (placeholder) -->
+        <div id="screen-assessment" class="screen">
+            <div class="container">
+                <h2>Assessment - Coming Soon</h2>
+                <p>22 questions will appear here</p>
+                <button class="btn btn-primary" onclick="app.navigate('landing')">Back to Landing</button>
+            </div>
+        </div>
+
+        <!-- Results Screen (placeholder) -->
+        <div id="screen-results" class="screen">
+            <div class="container">
+                <h2>Your Top 3 Plans</h2>
+                <p>Results will appear here</p>
+                <button class="btn btn-primary" onclick="app.navigate('landing')">Back to Landing</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        /**
+         * Application State & Navigation
+         */
+        const app = {
+            currentScreen: 'landing',
+            assessment: {},
+            recommendations: null,
+
+            navigate(screen) {
+                // Hide all screens
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+                // Show target screen
+                const targetScreen = document.getElementById(`screen-${screen}`);
+                if (targetScreen) {
+                    targetScreen.classList.add('active');
+                    this.currentScreen = screen;
+                    window.scrollTo(0, 0);
+                }
+            },
+
+            setAssessmentAnswer(question, answer) {
+                this.assessment[question] = answer;
+            },
+
+            async fetchRecommendations() {
+                // TODO: Call backend matching engine
+                // const response = await fetch('/api/match', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ assessment: this.assessment })
+                // });
+                // this.recommendations = await response.json();
+            }
+        };
+
+        // Initialize
+        console.log('HMO Blueprint Nigeria loaded');
+    </script>
+</body>
+</html>
