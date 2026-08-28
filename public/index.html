@@ -922,10 +922,14 @@
 <body>
     <header>
         <div class="header-content">
-            <div class="logo">
+            <div class="logo" onclick="app.navigate('landing')" style="cursor: pointer;">
                 <div>HMO Blueprint</div>
                 <div class="logo-sub">Nigeria</div>
             </div>
+            <nav style="display: flex; gap: var(--spacing-lg); align-items: center;">
+                <a href="#" onclick="app.navigate('learn'); return false;" style="color: white; text-decoration: none; font-size: var(--font-size-small);">Learn</a>
+                <a href="#" onclick="app.navigate('about'); return false;" style="color: white; text-decoration: none; font-size: var(--font-size-small);">About</a>
+            </nav>
         </div>
     </header>
 
@@ -1021,6 +1025,80 @@
                 <h2>Your Top 3 Plans</h2>
                 <p>Results will appear here (Sprint 6)</p>
                 <button class="btn btn-primary" onclick="app.navigate('landing')">Back to Landing</button>
+            </div>
+        </div>
+
+        <!-- About Screen (Founder Authority) -->
+        <div id="screen-about" class="screen">
+            <div class="container">
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <div style="text-align: center; margin-bottom: var(--spacing-2xl); padding: var(--spacing-xl) 0;">
+                        <h1 style="font-size: var(--font-size-2xl); color: var(--color-primary); margin-bottom: var(--spacing-md);">Azuka Orumgbe</h1>
+                        <p style="font-size: var(--font-size-large); color: var(--color-text-light); margin-bottom: var(--spacing-lg);">Health Insurance Intelligence | HMO Research | Data & AI</p>
+                        <button class="btn btn-primary" onclick="app.navigate('landing')">Explore HMO Blueprint</button>
+                    </div>
+
+                    <div style="background: var(--color-bg-alt); padding: var(--spacing-lg); border-radius: var(--radius-lg); margin-bottom: var(--spacing-xl);">
+                        <h2 style="color: var(--color-primary); margin-bottom: var(--spacing-lg);">Why I Built This</h2>
+                        <p style="margin-bottom: var(--spacing-md);">Choosing health insurance in Nigeria should not feel like guessing. Most people buy an HMO plan without understanding what it actually covers, what the limits are, what hospitals they can use, or what waiting periods apply. They discover gaps when they need the insurance most.</p>
+                        <p style="margin-bottom: var(--spacing-md);">HMO Blueprint is a deterministic comparison of 86 Nigerian health insurance plans based on public data. No AI bias. No random rankings. Every decision is auditable.</p>
+                        <p>You answer 22 questions about your needs, and the engine shows you which plans match best, including what you couldn't check and what you need to verify before you pay.</p>
+                    </div>
+
+                    <div style="background: var(--color-bg-alt); padding: var(--spacing-lg); border-radius: var(--radius-lg); margin-bottom: var(--spacing-xl);">
+                        <h2 style="color: var(--color-primary); margin-bottom: var(--spacing-lg);">What I Believe</h2>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: var(--spacing-md);"><strong>Healthcare should be understandable.</strong></li>
+                            <li style="margin-bottom: var(--spacing-md);">"Covered" is not enough.</li>
+                            <li style="margin-bottom: var(--spacing-md);">Limits matter. Provider access matters. Exclusions matter.</li>
+                            <li style="margin-bottom: var(--spacing-md);">Nigerians should know what to verify before they pay.</li>
+                            <li style="margin-bottom: var(--spacing-md);">Evidence should beat marketing.</li>
+                            <li style="margin-bottom: 0;">Technology should make healthcare easier to navigate.</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: var(--color-bg-alt); padding: var(--spacing-lg); border-radius: var(--radius-lg);">
+                        <h2 style="color: var(--color-primary); margin-bottom: var(--spacing-lg);">What I've Built</h2>
+                        <div style="margin-bottom: var(--spacing-lg);">
+                            <h3 style="font-size: var(--font-size-large); color: var(--color-text); margin-bottom: var(--spacing-sm);">HMO Blueprint Nigeria</h3>
+                            <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin-bottom: var(--spacing-md);">A health-insurance intelligence platform designed to help people understand plans, premiums, benefit limits, provider access, exclusions and trade-offs before they commit.</p>
+                            <button class="btn btn-secondary" onclick="app.navigate('landing')" style="width: 100%;">Explore HMO Blueprint</button>
+                        </div>
+                        <div style="margin-bottom: var(--spacing-lg); border-top: 1px solid var(--color-border); padding-top: var(--spacing-lg);">
+                            <h3 style="font-size: var(--font-size-large); color: var(--color-text); margin-bottom: var(--spacing-sm);">WellnessOS</h3>
+                            <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin-bottom: var(--spacing-md);">A workplace wellness operating system designed to help organizations understand workforce health risks and turn employee wellness into measurable action.</p>
+                            <a href="https://wellnessos.com.ng" target="_blank" class="btn btn-secondary" style="width: 100%; text-decoration: none;">Explore WellnessOS</a>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: var(--spacing-2xl); padding: var(--spacing-lg) 0; border-top: 1px solid var(--color-border);">
+                        <h3 style="margin-bottom: var(--spacing-lg);">Follow Azuka</h3>
+                        <div style="display: flex; gap: var(--spacing-md); justify-content: center; flex-wrap: wrap;">
+                            <a href="https://linkedin.com/in/azuka-orumgbe" target="_blank" class="social-link" style="width: 48px; height: 48px;">in</a>
+                            <a href="https://wa.me/2348180100100" target="_blank" class="social-link" style="width: 48px; height: 48px;">wa</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learn Screen (Content Library) -->
+        <div id="screen-learn" class="screen">
+            <div class="container">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <div style="text-align: center; margin-bottom: var(--spacing-2xl);">
+                        <h1 style="font-size: var(--font-size-2xl); color: var(--color-primary); margin-bottom: var(--spacing-md);">HMO Intelligence</h1>
+                        <p style="font-size: var(--font-size-large); color: var(--color-text-light);">Learn before you buy. Understand what to check before committing to an HMO plan.</p>
+                    </div>
+
+                    <div id="content-library" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--spacing-lg);"></div>
+
+                    <div style="text-align: center; margin-top: var(--spacing-2xl); padding: var(--spacing-xl) 0; border-top: 1px solid var(--color-border);">
+                        <h3 style="margin-bottom: var(--spacing-lg); color: var(--color-primary);">Want Personalized Learning?</h3>
+                        <p style="margin-bottom: var(--spacing-lg); color: var(--color-text-light);">Take the HMO assessment to get customized recommendations based on your needs.</p>
+                        <button class="btn btn-primary" onclick="app.navigate('assessment', 1)">Start Assessment</button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -1502,10 +1580,68 @@
              */
             getPrimaryResourceCTA() {
                 return FOUNDER_CONFIG.primaryResource;
+            },
+
+            /**
+             * Render content library on Learn page
+             */
+            renderContentLibrary() {
+                const container = document.getElementById('content-library');
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                const CONTENT = [
+                    { id: 'insurance-basics-1', title: 'What HMO Actually Means', desc: 'How HMOs work and what you need to verify' },
+                    { id: 'benefit-limits-1', title: 'Why Overall Limit ≠ Surgery Limit', desc: 'Understanding specific benefit limits' },
+                    { id: 'maternity-waiting-1', title: 'The 12-Month Maternity Waiting Period', desc: 'What to ask before you buy' },
+                    { id: 'hospital-choice-1', title: 'Your Hospital Being on the List Doesn\'t Mean Your Plan Uses It', desc: 'Understanding provider networks' },
+                    { id: 'parents-insurance-1', title: 'Buying Insurance for Aging Parents', desc: 'Special considerations for seniors' },
+                    { id: 'verification-checklist', title: 'Before You Pay: Verification Checklist', desc: 'Eight questions to ask first' },
+                    { id: 'capitation-explained', title: 'Capitation vs Fee-for-Service', desc: 'How HMOs pay doctors and hospitals' },
+                    { id: 'exclusions-matter', title: 'Common HMO Exclusions', desc: 'What is actually excluded from your plan' }
+                ];
+
+                for (const content of CONTENT) {
+                    const card = document.createElement('div');
+                    card.style.cssText = 'background: var(--color-bg-alt); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--spacing-lg); cursor: pointer; transition: all var(--transition-fast);';
+                    card.onmouseover = () => card.style.boxShadow = 'var(--shadow-lg)';
+                    card.onmouseout = () => card.style.boxShadow = 'none';
+
+                    card.innerHTML = `
+                        <h3 style="font-size: var(--font-size-base); font-weight: 700; color: var(--color-primary); margin-bottom: var(--spacing-sm);">${content.title}</h3>
+                        <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin-bottom: var(--spacing-md);">${content.desc}</p>
+                        <button class="btn btn-secondary" style="width: 100%;">Read More</button>
+                    `;
+                    container.appendChild(card);
+                }
+            },
+
+            /**
+             * Show Ask Azuka modal
+             */
+            showAskAzuka() {
+                const question = prompt('What are you unsure about?\n\nTip: Don\'t include diagnoses, medications, or sensitive medical information.');
+                if (!question) return;
+
+                const message = `Hi Azuka, I just used HMO Blueprint and I want help understanding my result.\n\nMy question: ${question}\n\n---\nPlease don\'t include diagnoses, medications or other sensitive medical information in your question.`;
+
+                const encodedMessage = encodeURIComponent(message);
+                window.open(`https://wa.me/2348180100100?text=${encodedMessage}`, '_blank');
             }
         };
 
         app.init();
+
+        // Render content library when learn page is shown
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new MutationObserver(() => {
+                if (document.getElementById('screen-learn').classList.contains('active')) {
+                    app.renderContentLibrary();
+                }
+            });
+            observer.observe(document.getElementById('app'), { subtree: true, attributeFilter: ['class'] });
+        });
     </script>
 </body>
 </html>
