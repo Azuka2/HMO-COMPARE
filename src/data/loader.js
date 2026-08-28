@@ -41,7 +41,7 @@ function parseCsv(content) {
 function coerceTypes(row) {
   const coerced = { ...row };
 
-  // Numeric fields
+  // Numeric fields - but first check for special string values
   for (const field of [
     'min_lives',
     'premium_ngn',
@@ -49,24 +49,33 @@ function coerceTypes(row) {
     'surgery_major_ngn',
     'maternity_ngn'
   ]) {
-    if (coerced[field] && coerced[field] !== 'null' && coerced[field] !== '') {
-      coerced[field] = parseFloat(coerced[field]);
-      if (isNaN(coerced[field])) coerced[field] = null;
-    } else {
-      coerced[field] = null;
-    }
-  }
+    const rawValue = coerced[field];
 
-  // Handle "NOT COVERED", "UNLIMITED", and other special statuses
-  for (const field of ['surgery_major_ngn', 'maternity_ngn']) {
-    if (typeof coerced[field] === 'string') {
-      if (coerced[field].toUpperCase() === 'NOT COVERED') {
+    if (!rawValue || rawValue === 'null' || rawValue === '') {
+      coerced[field] = null;
+      continue;
+    }
+
+    // Check for special status strings BEFORE parsing as number
+    if (typeof rawValue === 'string') {
+      const upperValue = rawValue.toUpperCase();
+      if (upperValue === 'NOT COVERED') {
         coerced[`${field}_status`] = BenefitStatus.NOT_COVERED;
         coerced[field] = null;
-      } else if (coerced[field].toUpperCase() === 'UNLIMITED') {
+        continue;
+      } else if (upperValue === 'UNLIMITED') {
         coerced[`${field}_status`] = BenefitStatus.UNLIMITED;
         coerced[field] = null;
+        continue;
       }
+    }
+
+    // Try to parse as number
+    const num = parseFloat(rawValue);
+    if (isNaN(num)) {
+      coerced[field] = null;
+    } else {
+      coerced[field] = num;
     }
   }
 
@@ -241,6 +250,7 @@ function transformRow(row, hmoMap, report) {
     const plan = {
       plan_id,
       hmo_id,
+      hmo_name: row.hmo_name,
       plan_name,
       customer_type: customer_type || null,
       min_lives: min_lives || null,
