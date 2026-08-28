@@ -999,22 +999,43 @@
         <!-- Priority Profile Screen -->
         <div id="screen-priority-profile" class="screen">
             <div class="profile-container">
+                <div style="text-align: center; margin-bottom: var(--spacing-xl);">
+                    <h1 style="font-size: var(--font-size-xl); color: var(--color-primary); margin-bottom: var(--spacing-md);">Here's what matters to you</h1>
+                    <p style="font-size: var(--font-size-small); color: var(--color-text-light);">We used your answers to understand your priorities for health insurance.</p>
+                </div>
+
                 <div class="profile-card">
-                    <div class="profile-title">Your Profile</div>
+                    <div class="profile-title">Your Situation</div>
                     <div class="profile-description" id="profile-description"></div>
                 </div>
+
                 <div class="profile-card">
-                    <div class="profile-title">What We Know</div>
+                    <div class="profile-title">Profile Details</div>
                     <div id="profile-details"></div>
                 </div>
+
                 <div class="profile-card">
-                    <div class="profile-title">How We'll Rank</div>
+                    <div class="profile-title">How We'll Look</div>
+                    <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin-bottom: var(--spacing-lg);">We'll prioritize based on what you told us. For example:</p>
+                    <ul style="font-size: var(--font-size-small); color: var(--color-text); line-height: 1.8; margin-bottom: var(--spacing-lg);">
+                        <li style="margin-bottom: var(--spacing-sm);">🏥 Hospital access: We'll check provider tiers and network size</li>
+                        <li style="margin-bottom: var(--spacing-sm);">💉 Surgery: We'll look at limits and what's actually covered</li>
+                        <li style="margin-bottom: var(--spacing-sm);">👶 Maternity: We'll check limits and waiting periods</li>
+                        <li style="margin-bottom: var(--spacing-sm);">💰 Price: We'll show you what's within and near your budget</li>
+                    </ul>
                     <div class="priority-weights" id="priority-weights"></div>
-                    <div id="unscored-warning"></div>
+                    <div id="unscored-warning" style="margin-top: var(--spacing-lg);"></div>
                 </div>
+
+                <div class="profile-card">
+                    <div class="profile-title">Before We Continue</div>
+                    <p style="font-size: var(--font-size-small); color: var(--color-text); margin-bottom: var(--spacing-md);">⚠️ <strong>Location:</strong> We can't yet confirm which hospitals in your area accept each plan. You'll need to verify that before you commit.</p>
+                    <p style="font-size: var(--font-size-small); color: var(--color-text);">✓ <strong>Data:</strong> We show you what's published. Where data is missing, the plan gets a lower confidence score or appears in "Couldn't compare."</p>
+                </div>
+
                 <div class="nav-buttons">
-                    <button class="btn btn-secondary" onclick="app.navigate('assessment', app.currentQuestion)">← Let me fix something</button>
-                    <button class="btn btn-primary" onclick="app.completeAssessment()">That's right — show me the plans</button>
+                    <button class="btn btn-secondary" onclick="app.navigate('assessment', app.currentQuestion)" style="flex: 0.6;">← Change Answer</button>
+                    <button class="btn btn-primary" onclick="app.completeAssessment()" style="flex: 1;">Show My Matches →</button>
                 </div>
             </div>
         </div>
@@ -1507,6 +1528,21 @@
                 this.navigate('priority-profile');
             },
 
+            calculateCompleteness() {
+                const total = QUESTIONS.length;
+                const answered = Object.keys(this.answers).length;
+                return Math.round((answered / total) * 100);
+            },
+
+            calculateConfidence() {
+                const completeness = this.calculateCompleteness();
+                const hasSkipped = this.skipped.length > 0;
+
+                if (completeness === 100 && !hasSkipped) return 'High';
+                if (completeness >= 80) return 'Medium';
+                return 'Low';
+            },
+
             showPriorityProfile() {
                 const customerTypeMap = {
                     individual: 'Covering just you',
@@ -1517,24 +1553,42 @@
                 };
 
                 const lives = this.answers.lives || 1;
-                const budget = this.answers.budget_total || 0;
+                const budget = this.answers.budget_total;
                 const state = this.answers.state || 'Nigeria';
                 const customerType = this.answers.customer_type || 'individual';
+                const completeness = this.calculateCompleteness();
+                const confidence = this.calculateConfidence();
 
-                const profileDesc = `${customerTypeMap[customerType] || customerType} in ${state} on about ₦${new Intl.NumberFormat('en-NG').format(budget)} a year.`;
+                let profileDesc = `${customerTypeMap[customerType] || customerType}`;
+                if (state !== 'Nigeria') profileDesc += ` in ${state}`;
+                if (budget) {
+                    profileDesc += ` on about ₦${new Intl.NumberFormat('en-NG').format(budget)} a year.`;
+                } else {
+                    profileDesc += ' with budget to be decided.';
+                }
                 document.getElementById('profile-description').textContent = profileDesc;
 
                 let detailsHTML = '';
-                detailsHTML += '<div class="profile-item"><div class="profile-label">Type</div><div class="profile-value">' + (customerTypeMap[customerType] || customerType) + '</div></div>';
-                detailsHTML += '<div class="profile-item"><div class="profile-label">Number of people</div><div class="profile-value">' + lives + '</div></div>';
-                detailsHTML += '<div class="profile-item"><div class="profile-label">Annual budget</div><div class="profile-value">₦' + new Intl.NumberFormat('en-NG').format(budget) + '</div></div>';
+                detailsHTML += '<div class="profile-item"><div class="profile-label">Who</div><div class="profile-value">' + (customerTypeMap[customerType] || customerType) + '</div></div>';
+                detailsHTML += '<div class="profile-item"><div class="profile-label">People</div><div class="profile-value">' + lives + '</div></div>';
                 detailsHTML += '<div class="profile-item"><div class="profile-label">Location</div><div class="profile-value">' + state + '</div></div>';
-                if (this.answers.top_priorities) {
-                    detailsHTML += '<div class="profile-item"><div class="profile-label">Top priorities</div><div class="profile-value">' + this.answers.top_priorities.join(', ') + '</div></div>';
+                detailsHTML += '<div class="profile-item"><div class="profile-label">Annual budget</div><div class="profile-value">' + (budget ? '₦' + new Intl.NumberFormat('en-NG').format(budget) : 'To be decided') + '</div></div>';
+
+                if (this.answers.top_priorities && this.answers.top_priorities.length > 0) {
+                    detailsHTML += '<div class="profile-item"><div class="profile-label">Top 3 priorities</div><div class="profile-value">' + this.answers.top_priorities.map((p,i) => `${i+1}. ${p}`).join(' • ') + '</div></div>';
                 }
+
                 if (this.answers.biggest_fear) {
                     detailsHTML += '<div class="profile-item"><div class="profile-label">Biggest concern</div><div class="profile-value">' + this.answers.biggest_fear + '</div></div>';
                 }
+
+                detailsHTML += '<div class="profile-item"><div class="profile-label">Profile completeness</div><div class="profile-value">' + completeness + '%</div></div>';
+                detailsHTML += '<div class="profile-item"><div class="profile-label">Confidence</div><div class="profile-value">' + confidence + '</div></div>';
+
+                if (this.skipped.length > 0) {
+                    detailsHTML += '<div class="profile-item"><div class="profile-label">Skipped questions</div><div class="profile-value">' + this.skipped.length + ' of 22</div></div>';
+                }
+
                 document.getElementById('profile-details').innerHTML = detailsHTML;
 
                 let weightsHTML = '<div class="priority-weight"><span>Price</span><div class="priority-weight-bar"><div class="priority-weight-fill" style="width: 25%"></div></div><span class="priority-weight-value">25%</span></div>';
@@ -1544,14 +1598,19 @@
                 document.getElementById('priority-weights').innerHTML = weightsHTML;
 
                 const unscored = ['Medication', 'Diagnostics', 'Digital', 'Wellness'];
-                let unscoredHTML = '<div class="warning-box"><div class="warning-title">⚠️ Not scored (no public data)</div><div class="warning-text">You told us ' + unscored.join(', ') + ' matter. We don\'t have enough comparable data to score these yet.</div></div>';
+                let unscoredHTML = '<div class="warning-box"><div class="warning-title">⚠️ Collected but not scored</div><div class="warning-text">You told us ' + unscored.join(', ') + ' matter. Plan data for these dimensions is not yet available for comparison.</div></div>';
+
+                if (this.skipped.length > 0) {
+                    unscoredHTML += '<div class="warning-box" style="margin-top: var(--spacing-md);"><div class="warning-title">ℹ️ Some answers skipped</div><div class="warning-text">You skipped ' + this.skipped.length + ' questions. Your result will still work, but recommendations may be less precise.</div></div>';
+                }
+
                 document.getElementById('unscored-warning').innerHTML = unscoredHTML;
             },
 
             completeAssessment() {
-                // User confirmed profile - ready for recommendations (Sprint 5/6)
-                alert('Assessment complete! Priority profile ready.\n\nNext: Your personalized plan recommendations');
-                this.navigate('landing');
+                // User confirms they're ready - transition to matching
+                this.navigate('results');
+                // In Sprint 6, this will call the recommendation engine
             },
 
             /**
