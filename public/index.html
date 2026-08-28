@@ -1056,6 +1056,14 @@
             </div>
         </div>
 
+        <!-- Comparison Screen -->
+        <div id="screen-comparison" class="screen">
+            <div class="container" id="comparison-container">
+                <h2>Compare Plans</h2>
+                <p>Choose up to 3 plans to see what actually changes between them.</p>
+            </div>
+        </div>
+
         <!-- About Screen (Founder Authority) -->
         <div id="screen-about" class="screen">
             <div class="container">
@@ -2172,7 +2180,10 @@
                             <li style="margin-bottom: var(--spacing-md);">• Match percentages reflect fit against what we could verify — not a judgement of overall quality.</li>
                             <li style="margin-bottom: var(--spacing-md);">• We can't yet confirm which hospitals near you accept each exact plan. That's why we've highlighted it as your #1 verification step.</li>
                         </ul>
-                        <button class="btn btn-secondary" style="width: 100%; margin-top: var(--spacing-lg);" onclick="app.navigate('landing')">← Back to Home</button>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
+                            <button class="btn btn-primary" onclick="app.initializeComparison(app.currentRecommendation)">📊 Compare Plans</button>
+                            <button class="btn btn-secondary" onclick="app.navigate('landing')">← Back to Home</button>
+                        </div>
                     </div>
                 `;
             },
@@ -2242,6 +2253,414 @@ I'm interested in learning more about this plan. Can you help me verify:
                 const text = `I'm comparing health plans in Nigeria. I'd like to know more about ${hmoName} ${planName}. Can you help me verify these details? https://hmoblueprint.com`;
                 const encoded = encodeURIComponent(text);
                 window.open(`https://wa.me/?text=${encoded}`, '_blank');
+            },
+
+            // ===== SPRINT 7: COMPARISON MODE =====
+
+            selectedComparisonPlans: [],
+            currentRecommendationForComparison: null,
+
+            initializeComparison(result) {
+                this.currentRecommendationForComparison = result;
+                this.selectedComparisonPlans = [];
+                this.showComparisonSelector(result);
+            },
+
+            showComparisonSelector(result) {
+                if (!result || !result.top_3) return;
+
+                const allPlans = [...result.top_3, ...(result.alternatives || [])];
+                const maxPlans = 3;
+
+                let html = `
+                    <div style="max-width: 900px; margin: 0 auto;">
+                        <h2 style="font-size: var(--font-size-2xl); color: var(--color-primary); margin-bottom: var(--spacing-md);">Compare Plans</h2>
+                        <p style="color: var(--color-text); margin: 0 0 var(--spacing-lg) 0; line-height: 1.6;">Choose up to ${maxPlans} plans to see what actually changes between them.</p>
+
+                        <div style="display: grid; gap: var(--spacing-md); margin-bottom: var(--spacing-xl);">
+                            ${allPlans.map((planResult, idx) => {
+                                const plan = planResult.plan;
+                                const isSelected = this.selectedComparisonPlans.some(p => p.plan_id === plan.plan_id);
+                                const pricePerPerson = plan.premium?.amount_kobo ? (plan.premium.amount_kobo / 100).toLocaleString('en-NG') : 'Price not available';
+
+                                return `
+                                    <div style="background: white; padding: var(--spacing-lg); border-radius: var(--radius-md); border: 2px ${isSelected ? 'solid var(--color-primary)' : 'solid var(--color-border)'}; cursor: pointer;" onclick="app.togglePlanSelection('${plan.plan_id}', ${JSON.stringify(planResult).replace(/'/g, '\\\'')})">
+                                        <div style="display: flex; gap: var(--spacing-md); align-items: center;">
+                                            <input type="checkbox" ${isSelected ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;" onclick="event.stopPropagation();">
+                                            <div style="flex: 1;">
+                                                <h3 style="font-size: var(--font-size-large); color: var(--color-primary); margin: 0 0 var(--spacing-xs) 0;">${plan.hmo_name}</h3>
+                                                <p style="color: var(--color-text); margin: 0 0 var(--spacing-xs) 0;">${plan.plan_name}</p>
+                                                <p style="color: var(--color-text-light); font-size: var(--font-size-small); margin: 0;">₦${pricePerPerson}/person/year</p>
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <p style="font-size: 1.5rem; font-weight: bold; color: var(--color-primary); margin: 0;">${Math.min(planResult.match_score, 95)}%</p>
+                                                <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: 0;">match</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                            <button class="btn btn-primary" ${this.selectedComparisonPlans.length < 2 ? 'disabled style="opacity: 0.5;"' : ''} onclick="app.startComparison()">
+                                Compare ${this.selectedComparisonPlans.length} Plan${this.selectedComparisonPlans.length !== 1 ? 's' : ''} →
+                            </button>
+                            <button class="btn btn-secondary" onclick="app.navigate('results')">← Back to Results</button>
+                        </div>
+
+                        ${this.selectedComparisonPlans.length === 0 ? `
+                            <p style="color: var(--color-text-light); font-size: var(--font-size-small); margin-top: var(--spacing-lg); text-align: center;">Select at least 2 plans to compare</p>
+                        ` : ''}
+                    </div>
+                `;
+
+                document.getElementById('comparison-container').innerHTML = html;
+                window.scrollTo(0, 0);
+            },
+
+            togglePlanSelection(planId, planResult) {
+                const maxPlans = 3;
+                const isSelected = this.selectedComparisonPlans.some(p => p.plan_id === planId);
+
+                if (isSelected) {
+                    this.selectedComparisonPlans = this.selectedComparisonPlans.filter(p => p.plan_id !== planId);
+                } else {
+                    if (this.selectedComparisonPlans.length < maxPlans) {
+                        this.selectedComparisonPlans.push(planResult);
+                    } else {
+                        alert(`You can compare up to ${maxPlans} plans at a time.`);
+                        return;
+                    }
+                }
+
+                this.showComparisonSelector(this.currentRecommendationForComparison);
+            },
+
+            startComparison() {
+                if (this.selectedComparisonPlans.length < 2) {
+                    alert('Please select at least 2 plans to compare.');
+                    return;
+                }
+
+                this.navigate('comparison');
+                this.displayComparison();
+            },
+
+            displayComparison() {
+                const plans = this.selectedComparisonPlans;
+                const warnings = this.generateComparisonWarnings(plans);
+
+                let html = `
+                    <div style="max-width: 1200px; margin: 0 auto;">
+                        <div style="margin-bottom: var(--spacing-xl);">
+                            <button class="btn btn-secondary" onclick="app.navigate('comparison'); app.showComparisonSelector(app.currentRecommendationForComparison);">← Change Plans</button>
+                            <button class="btn btn-secondary" style="margin-left: var(--spacing-md);" onclick="app.navigate('results')">← Back to Results</button>
+                        </div>
+
+                        ${this.renderComparisonWarnings(warnings)}
+
+                        <div id="comparison-table-container" style="overflow-x: auto; margin-bottom: var(--spacing-xl);">
+                            ${this.renderComparison13RowTable(plans)}
+                        </div>
+
+                        ${this.renderComparisonInsights(plans)}
+                    </div>
+                `;
+
+                document.getElementById('comparison-container').innerHTML = html;
+                window.scrollTo(0, 0);
+            },
+
+            generateComparisonWarnings(plans) {
+                const warnings = [];
+
+                // Check for customer type mismatch
+                const customerTypes = [...new Set(plans.map(p => p.plan.customer_type))];
+                if (customerTypes.length > 1) {
+                    warnings.push({
+                        type: 'customer_type_mismatch',
+                        severity: 'warning',
+                        message: 'These plans target different customer types. Their prices and benefits may not be directly equivalent.',
+                        plans: plans.length
+                    });
+                }
+
+                // Check for price basis mismatch
+                const priceBases = [...new Set(plans.map(p => p.plan.premium?.basis || 'unknown'))];
+                if (priceBases.length > 1) {
+                    warnings.push({
+                        type: 'price_basis_mismatch',
+                        severity: 'warning',
+                        message: 'These plans use different price bases. Compare carefully.'
+                    });
+                }
+
+                // Check for evidence asymmetry
+                const statuses = plans.map(p => p.plan.premium?.status || 'UNKNOWN');
+                const uniqueStatuses = [...new Set(statuses)];
+                if (uniqueStatuses.length > 1) {
+                    warnings.push({
+                        type: 'evidence_asymmetry',
+                        severity: 'warning',
+                        message: 'Evidence quality is not equal across these plans.'
+                    });
+                }
+
+                // Check for promotional pricing
+                if (plans.some(p => p.plan.premium?.status === 'PROMOTIONAL')) {
+                    warnings.push({
+                        type: 'promotional_pricing',
+                        severity: 'warning',
+                        message: 'One or more displayed prices are promotional and may not represent the standard premium.'
+                    });
+                }
+
+                // Check for stale pricing
+                if (plans.some(p => p.plan.premium?.status === 'POTENTIALLY_STALE')) {
+                    warnings.push({
+                        type: 'stale_pricing',
+                        severity: 'warning',
+                        message: 'One or more prices may be outdated. Verify before purchase.'
+                    });
+                }
+
+                return warnings;
+            },
+
+            renderComparisonWarnings(warnings) {
+                if (!warnings || warnings.length === 0) {
+                    return '';
+                }
+
+                return `
+                    <div style="margin-bottom: var(--spacing-xl);">
+                        ${warnings.map(w => `
+                            <div style="background: var(--color-accent); color: white; padding: var(--spacing-md); border-radius: var(--radius-md); margin-bottom: var(--spacing-md);">
+                                <p style="margin: 0; font-weight: bold;">⚠️ ${w.message}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            },
+
+            renderComparison13RowTable(plans) {
+                const rows = [
+                    { label: 'Annual premium', key: 'premium', type: 'price' },
+                    { label: 'Total for your group', key: 'group_total', type: 'computed' },
+                    { label: 'Overall limit', key: 'overall_limit', type: 'limit' },
+                    { label: 'Major surgery', key: 'surgery', type: 'limit' },
+                    { label: 'Surgery as % of headline', key: 'surgery_ratio', type: 'computed' },
+                    { label: 'Maternity', key: 'maternity', type: 'limit' },
+                    { label: 'Hospital access tier', key: 'provider_access', type: 'text' },
+                    { label: 'Payment model', key: 'payment_model', type: 'text' },
+                    { label: 'Waiting periods', key: 'waiting_periods', type: 'text' },
+                    { label: 'Medication', key: 'medication', type: 'text' },
+                    { label: 'Dental & optical', key: 'dental_optical', type: 'text' },
+                    { label: 'Scans (MRI/CT)', key: 'scans', type: 'text' },
+                    { label: 'Evidence & date', key: 'evidence', type: 'evidence' }
+                ];
+
+                // Desktop table
+                let html = `
+                    <table style="width: 100%; border-collapse: collapse; display: none;" class="comparison-table-desktop">
+                        <thead>
+                            <tr style="background: var(--color-primary-lighter); border-bottom: 2px solid var(--color-primary);">
+                                <th style="padding: var(--spacing-md); text-align: left; font-weight: bold; color: var(--color-primary);">Benefit</th>
+                                ${plans.map((p, idx) => `
+                                    <th style="padding: var(--spacing-md); text-align: left; font-weight: bold; color: var(--color-primary);">
+                                        ${p.plan.hmo_name}<br>
+                                        <span style="font-size: var(--font-size-small); font-weight: normal;">${p.plan.plan_name}</span>
+                                    </th>
+                                `).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rows.map((row, idx) => `
+                                <tr style="border-bottom: 1px solid var(--color-border);">
+                                    <td style="padding: var(--spacing-md); font-weight: bold; color: var(--color-primary); width: 200px;">${row.label}</td>
+                                    ${plans.map(p => `
+                                        <td style="padding: var(--spacing-md); color: var(--color-text);">
+                                            ${this.renderComparisonCell(p, row)}
+                                        </td>
+                                    `).join('')}
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+
+                // Mobile stacked layout
+                html += `
+                    <div style="display: block;" class="comparison-table-mobile">
+                        ${rows.map((row, idx) => `
+                            <div style="background: white; padding: var(--spacing-lg); border-radius: var(--radius-md); margin-bottom: var(--spacing-md); border: 1px solid var(--color-border);">
+                                <p style="font-weight: bold; color: var(--color-primary); margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-large);">${row.label}</p>
+                                ${plans.map(p => `
+                                    <div style="margin-bottom: var(--spacing-md);">
+                                        <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: 0 0 var(--spacing-xs) 0; font-weight: bold;">${p.plan.hmo_name} — ${p.plan.plan_name}</p>
+                                        <p style="color: var(--color-text); margin: 0; font-size: var(--font-size-base);">
+                                            ${this.renderComparisonCell(p, row)}
+                                        </p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                // CSS to toggle views
+                html += `
+                    <style>
+                        @media (min-width: 768px) {
+                            .comparison-table-desktop { display: table !important; }
+                            .comparison-table-mobile { display: none !important; }
+                        }
+                    </style>
+                `;
+
+                return html;
+            },
+
+            renderComparisonCell(planResult, row) {
+                const plan = planResult.plan;
+
+                switch (row.key) {
+                    case 'premium':
+                        if (!plan.premium?.amount_kobo) return 'Not published';
+                        const perPerson = (plan.premium.amount_kobo / 100).toLocaleString('en-NG');
+                        return `₦${perPerson}<br><span style="font-size: var(--font-size-small); color: var(--color-text-light);">per person/year</span>`;
+
+                    case 'group_total':
+                        if (!plan.premium?.amount_kobo || !this.answers.lives) return 'Not calculable';
+                        if (plan.customer_type === 'retail_family' && plan.premium.basis === 'family') {
+                            return `₦${(plan.premium.amount_kobo / 100).toLocaleString('en-NG')}<br><span style="font-size: var(--font-size-small); color: var(--color-text-light);">per family/year</span>`;
+                        }
+                        const total = (plan.premium.amount_kobo * this.answers.lives / 100).toLocaleString('en-NG');
+                        return `₦${total}<br><span style="font-size: var(--font-size-small); color: var(--color-text-light);">for ${this.answers.lives} people</span>`;
+
+                    case 'overall_limit':
+                        if (!plan.overall_limit?.amount_kobo) return 'Not published';
+                        return `₦${(plan.overall_limit.amount_kobo / 100).toLocaleString('en-NG')}<br><span style="font-size: var(--font-size-small); color: var(--color-text-light);">annual limit</span>`;
+
+                    case 'surgery':
+                        if (!plan.surgery_major?.amount_kobo) return 'Not published';
+                        return `₦${(plan.surgery_major.amount_kobo / 100).toLocaleString('en-NG')}<br><span style="font-size: var(--font-size-small); color: var(--color-text-light);">major surgery</span>`;
+
+                    case 'surgery_ratio':
+                        if (!plan.surgery_major?.amount_kobo || !plan.overall_limit?.amount_kobo) return 'Not calculable';
+                        if (plan.overall_limit.amount_kobo === 0) return 'Not calculable';
+                        const ratio = (plan.surgery_major.amount_kobo / plan.overall_limit.amount_kobo * 100).toFixed(1);
+                        const bar = '█'.repeat(Math.ceil(ratio / 10)) + '░'.repeat(Math.max(0, 10 - Math.ceil(ratio / 10)));
+                        return `${ratio}%<br><span style="font-size: var(--font-size-small); color: var(--color-text-light);">${bar}</span>`;
+
+                    case 'maternity':
+                        if (!plan.maternity?.amount_kobo) return 'Not published';
+                        return `₦${(plan.maternity.amount_kobo / 100).toLocaleString('en-NG')}<br><span style="font-size: var(--font-size-small); color: var(--color-text-light);">maternity</span>`;
+
+                    case 'provider_access':
+                        if (!plan.provider_access?.tiers || plan.provider_access.tiers.length === 0) return 'Not published';
+                        return `${plan.provider_access.tiers.join('–')}<br><span style="font-size: var(--font-size-small); color: var(--color-text-light);">provider tiers</span>`;
+
+                    case 'payment_model':
+                        return plan.payment_model || 'Not published';
+
+                    case 'waiting_periods':
+                        if (!plan.waiting_periods || plan.waiting_periods.length === 0) return 'Not published';
+                        return plan.waiting_periods.map(wp => `${wp.benefit}: ${wp.months}mo`).join('<br>');
+
+                    case 'medication':
+                        return 'Not published by HMOs';
+
+                    case 'dental_optical':
+                        return 'Not published by HMOs';
+
+                    case 'scans':
+                        return 'Not published by HMOs';
+
+                    case 'evidence':
+                        const status = plan.premium?.status || 'UNKNOWN';
+                        const statusLabel = this.formatPremiumStatus(status);
+                        const date = plan.premium?.retrieved_date || 'Unknown';
+                        return `${statusLabel}<br><span style="font-size: var(--font-size-small); color: var(--color-text-light);">Checked: ${date}</span>`;
+
+                    default:
+                        return 'Not published';
+                }
+            },
+
+            renderComparisonInsights(plans) {
+                const insights = this.generateComparisonInsights(plans);
+
+                if (!insights || insights.length === 0) {
+                    return '';
+                }
+
+                return `
+                    <div style="margin-top: var(--spacing-xl); padding: var(--spacing-lg); background: var(--color-primary-lighter); border-radius: var(--radius-lg);">
+                        <h3 style="font-size: var(--font-size-xl); color: var(--color-primary); margin-bottom: var(--spacing-md);">What stands out?</h3>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            ${insights.map(insight => `
+                                <li style="padding: var(--spacing-md) 0; color: var(--color-text); line-height: 1.6; border-bottom: 1px solid rgba(0,0,0,0.1);">
+                                    • ${insight}
+                                </li>
+                            `).slice(0, -1).join('')}
+                        </ul>
+                    </div>
+                `;
+            },
+
+            generateComparisonInsights(plans) {
+                const insights = [];
+
+                // Surgery limit comparison
+                const surgeryLimits = plans.map(p => ({
+                    hmo: p.plan.hmo_name,
+                    limit: p.plan.surgery_major?.amount_kobo || 0
+                })).filter(s => s.limit > 0);
+
+                if (surgeryLimits.length === plans.length) {
+                    const maxSurgery = Math.max(...surgeryLimits.map(s => s.limit));
+                    const maxHmo = surgeryLimits.find(s => s.limit === maxSurgery);
+                    if (maxHmo) {
+                        insights.push(`${maxHmo.hmo} has the highest published surgery limit at ₦${(maxSurgery / 100).toLocaleString('en-NG')}.`);
+                    }
+                }
+
+                // Price comparison
+                const pricesPerPerson = plans
+                    .filter(p => p.plan.premium?.basis === 'per_person' || !p.plan.premium?.basis)
+                    .map(p => ({
+                        hmo: p.plan.hmo_name,
+                        price: p.plan.premium?.amount_kobo || 0
+                    }))
+                    .filter(p => p.price > 0);
+
+                if (pricesPerPerson.length === plans.length) {
+                    const minPrice = Math.min(...pricesPerPerson.map(p => p.price));
+                    const minHmo = pricesPerPerson.find(p => p.price === minPrice);
+                    if (minHmo) {
+                        insights.push(`${minHmo.hmo} has the lowest published premium at ₦${(minPrice / 100).toLocaleString('en-NG')}/person/year.`);
+                    }
+                }
+
+                // Hospital access tier comparison
+                const tiers = plans.filter(p => p.plan.provider_access?.tiers?.length > 0);
+                if (tiers.length > 0) {
+                    const widestTiers = tiers.reduce((prev, current) =>
+                        (current.plan.provider_access.tiers.length > prev.plan.provider_access.tiers.length) ? current : prev
+                    );
+                    insights.push(`${widestTiers.plan.hmo_name} offers the widest provider access tier (${widestTiers.plan.provider_access.tiers.join('–')}), though verify participation before use.`);
+                }
+
+                // Maternity comparison for family plans
+                const maternityPlans = plans.filter(p => p.plan.maternity?.amount_kobo > 0);
+                if (maternityPlans.length > 0 && maternityPlans.length < plans.length) {
+                    const withMaternity = maternityPlans.map(p => p.plan.hmo_name).join(' and ');
+                    insights.push(`Only ${withMaternity} publish maternity coverage among these plans — maternity is listed for only ~17% of all plans we analyze.`);
+                }
+
+                return insights;
             },
 
             /**
