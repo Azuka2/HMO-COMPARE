@@ -207,3 +207,5 @@ const server = http.createServer(async (req, res) => {
     console.log(`📊 Dataset: ${dataset.plans.length} plans from ${dataset.hmos.length} HMOs`);
   });
 })();
+
+// Force redeploy: triggering Railway rebuild to pick up fix commit 02ab48f
