@@ -256,7 +256,7 @@ function transformRow(row, hmoMap, report) {
       min_lives: min_lives || null,
       max_lives: null,
       lives_covered: null, // Will be populated for family plans
-      premium: createPremium(premium_ngn, BenefitStatus.KNOWN, source_status, null, notes),
+      premium: createPremium(premium_ngn ? premium_ngn * 100 : null, BenefitStatus.KNOWN, source_status, null, notes),
       ...benefits,
       provider_access: {
         system: 'UNKNOWN',
