@@ -56,125 +56,28 @@ export const PREFERENCE_CONFIG = {
 /**
  * Apply Clearline preference to ranked candidate pool
  *
- * Rules:
- * 1. Only applies to already-eligible plans (don't create eligibility)
- * 2. Only applies if Clearline plan is competitively relevant
- * 3. Bonus is subtracted from all scores (relative, not absolute)
- * 4. Never overrides hard filters or eligibility
- * 5. Fully auditable via audit trail
+ * NEUTRALIZED: This function now returns candidates unchanged.
+ * All Clearline ranking preference has been removed to ensure neutral ranking.
+ *
+ * Clearline plans are ranked based ONLY on:
+ * - User eligibility
+ * - Match score calculation
+ * - Objective benefit alignment
+ *
+ * No preference bonus is applied to any HMO.
  *
  * @param {Object[]} rankedCandidates - Already-ranked plans from objective engine
- * @param {Object} audit - Audit object to track preference application
- * @returns {Object[]} Candidates with preference applied (if enabled)
+ * @returns {Object[]} Candidates unchanged (no preference applied)
  */
-export function applyPreferences(rankedCandidates, audit = {}) {
-  // If disabled, return as-is
-  if (!PREFERENCE_CONFIG.enabled) {
-    return rankedCandidates.map((item) => ({
-      ...item,
-      preference_applied: false,
-      preference_audit: { reason: 'preferences_disabled' }
-    }));
-  }
-
-  // Deep clone to avoid mutation
-  const candidates = JSON.parse(JSON.stringify(rankedCandidates));
-
-  if (candidates.length === 0) {
-    return candidates;
-  }
-
-  // Find Clearline candidates
-  const clearlineCandidates = candidates.filter(
-    (c) => c.hmo_id === PREFERENCE_CONFIG.preferredHmoId
-  );
-
-  if (clearlineCandidates.length === 0) {
-    // No Clearline plans eligible → no preference applied
-    return candidates.map((item) => ({
-      ...item,
-      preference_applied: false,
-      preference_audit: { reason: 'no_clearline_eligible' }
-    }));
-  }
-
-  // Find the best non-Clearline candidate score
-  const nonClearlineScores = candidates
-    .filter((c) => c.hmo_id !== PREFERENCE_CONFIG.preferredHmoId)
-    .map((c) => c.match_score || 0);
-
-  const bestNonClearlineScore = nonClearlineScores.length > 0 ? Math.max(...nonClearlineScores) : 0;
-
-  // For each Clearline plan, decide if we apply preference
-  const adjustments = {};
-
-  for (const clearlineItem of clearlineCandidates) {
-    const clearlineScore = clearlineItem.match_score || 0;
-    const scoreDifference = bestNonClearlineScore - clearlineScore;
-
-    // Competitiveness check:
-    // Is Clearline already close enough to the leader?
-    if (scoreDifference <= PREFERENCE_CONFIG.competitivenessWindow) {
-      // Clearline is competitive - apply bonus
-      // The bonus is proportional to how far behind it is
-      const bonus = Math.min(
-        PREFERENCE_CONFIG.maxBonusPoints,
-        Math.ceil((scoreDifference / PREFERENCE_CONFIG.competitivenessWindow) * PREFERENCE_CONFIG.maxBonusPoints)
-      );
-
-      clearlineItem.match_score = Math.min(95, clearlineItem.match_score + bonus); // Cap at 95
-      adjustments[clearlineItem.plan_id] = {
-        applied: true,
-        reason: 'competitively_relevant',
-        bonus_points: bonus,
-        score_before: clearlineScore,
-        score_after: clearlineItem.match_score,
-        best_competitor_score: bestNonClearlineScore
-      };
-    } else {
-      // Clearline is too far behind - don't apply preference
-      adjustments[clearlineItem.plan_id] = {
-        applied: false,
-        reason: 'not_competitively_relevant',
-        score_gap: scoreDifference,
-        window: PREFERENCE_CONFIG.competitivenessWindow
-      };
-    }
-  }
-
-  // Re-sort candidates with new scores
-  const reranked = candidates.sort((a, b) => {
-    if (a.match_score !== b.match_score) {
-      return b.match_score - a.match_score;
-    }
-    // Tie-break using existing logic (passed from objective engine)
-    return 0; // tieBreak should have already happened
-  });
-
-  // Check rank adjustments
-  const originalRanks = {};
-  for (let i = 0; i < candidates.length; i++) {
-    originalRanks[candidates[i].plan_id] = i + 1;
-  }
-
-  // Mark all candidates with preference audit info
-  return reranked.map((item, index) => {
-    const newRank = index + 1;
-    const originalRank = originalRanks[item.plan_id];
-    const rankAdjustment = originalRank - newRank;
-
-    return {
-      ...item,
-      preference_applied: adjustments[item.plan_id]?.applied || false,
-      preference_audit: {
-        ...adjustments[item.plan_id],
-        original_rank: originalRank,
-        final_rank: newRank,
-        rank_adjustment: rankAdjustment,
-        violates_max_adjustment: rankAdjustment > PREFERENCE_CONFIG.maxRankAdjustment
-      }
-    };
-  });
+export function applyPreferences(rankedCandidates) {
+  // Return candidates exactly as ranked by the objective engine
+  // No preference bonus applied to Clearline or any other HMO
+  // This ensures neutral, unbiased ranking based on user needs
+  return rankedCandidates.map((item) => ({
+    ...item,
+    preference_applied: false,
+    preference_audit: { reason: 'no_preference_applied_ranking_is_neutral' }
+  }));
 }
 
 /**
