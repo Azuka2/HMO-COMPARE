@@ -1,0 +1,436 @@
+{
+  "metadata": {
+    "loaded_at": "2026-08-28T06:47:18.599Z",
+    "dataset_version": "MASTER_PLAN_PRICING_2026-08-27",
+    "total_rows": 99,
+    "total_plans": 86,
+    "total_hmos": 16
+  },
+  "hmos": [
+    {
+      "hmo_id": "NG-HMO-001",
+      "hmo_name": "Hygeia HMO",
+      "matchability": "FULL",
+      "plan_count": 12
+    },
+    {
+      "hmo_id": "NG-HMO-002",
+      "hmo_name": "Total Health Trust",
+      "matchability": "EXCLUDE",
+      "plan_count": 0
+    },
+    {
+      "hmo_id": "NG-HMO-003",
+      "hmo_name": "Clearline HMO",
+      "matchability": "FULL",
+      "plan_count": 12
+    },
+    {
+      "hmo_id": "NG-HMO-005",
+      "hmo_name": "Mediplan Healthcare",
+      "matchability": "FULL",
+      "plan_count": 3
+    },
+    {
+      "hmo_id": "NG-HMO-006",
+      "hmo_name": "AIICO Multishield",
+      "matchability": "FULL",
+      "plan_count": 5
+    },
+    {
+      "hmo_id": "NG-HMO-009",
+      "hmo_name": "IHMS",
+      "matchability": "FULL",
+      "plan_count": 5
+    },
+    {
+      "hmo_id": "NG-HMO-012",
+      "hmo_name": "SUNU Health",
+      "matchability": "EXCLUDE",
+      "plan_count": 0
+    },
+    {
+      "hmo_id": "NG-HMO-027",
+      "hmo_name": "Greenbay Healthcare",
+      "matchability": "FULL",
+      "plan_count": 1
+    },
+    {
+      "hmo_id": "NG-HMO-033",
+      "hmo_name": "AXA Mansard Health",
+      "matchability": "FULL",
+      "plan_count": 6
+    },
+    {
+      "hmo_id": "NG-HMO-036",
+      "hmo_name": "Avon Healthcare",
+      "matchability": "FULL",
+      "plan_count": 3
+    },
+    {
+      "hmo_id": "NG-HMO-043",
+      "hmo_name": "Novo Health Africa",
+      "matchability": "EXCLUDE",
+      "plan_count": 0
+    },
+    {
+      "hmo_id": "NG-HMO-052",
+      "hmo_name": "Leadway Health",
+      "matchability": "FULL",
+      "plan_count": 9
+    },
+    {
+      "hmo_id": "NG-HMO-054",
+      "hmo_name": "Reliance HMO",
+      "matchability": "FULL",
+      "plan_count": 7
+    },
+    {
+      "hmo_id": "NG-HMO-058",
+      "hmo_name": "Bastion Health",
+      "matchability": "FULL",
+      "plan_count": 13
+    },
+    {
+      "hmo_id": "NG-HMO-061",
+      "hmo_name": "DOT HMO",
+      "matchability": "EXCLUDE",
+      "plan_count": 0
+    },
+    {
+      "hmo_id": "NG-HMO-077",
+      "hmo_name": "NEM Health",
+      "matchability": "FULL",
+      "plan_count": 10
+    }
+  ],
+  "plans_sample": [
+    {
+      "plan_id": "NG-HMO-001-hyessential-retail_individual",
+      "hmo_id": "NG-HMO-001",
+      "plan_name": "HyEssential",
+      "customer_type": "retail_individual",
+      "min_lives": 1,
+      "max_lives": null,
+      "lives_covered": null,
+      "premium": {
+        "amount_kobo": 26515,
+        "currency": "NGN",
+        "period": "annual",
+        "basis": "per_person",
+        "status": "VERIFIED_SNAPSHOT",
+        "source_url": "https://www.example.com",
+        "retrieved_date": "2026-08-27",
+        "source_date": null,
+        "snapshot_ref": "snapshot_2026-08-27.png",
+        "evidence_tier": "B"
+      },
+      "overall_limit": {
+        "status": "UNKNOWN"
+      },
+      "surgery_major": {
+        "status": "UNKNOWN"
+      },
+      "maternity": {
+        "status": "UNKNOWN"
+      },
+      "drugs": {
+        "status": "UNKNOWN"
+      },
+      "dental": {
+        "status": "UNKNOWN"
+      },
+      "diagnostics": {
+        "status": "UNKNOWN"
+      },
+      "wellness": {
+        "status": "UNKNOWN"
+      },
+      "provider_access": {
+        "system": "UNKNOWN",
+        "tiers": [],
+        "region": [
+          "NG"
+        ],
+        "named_facilities": [],
+        "raw": "Category C-D"
+      },
+      "payment_model": "UNKNOWN",
+      "waiting_periods": [],
+      "notes": "Snapshot-verified 2026-08-27 05:14-05:20 (URL+clock visible)"
+    },
+    {
+      "plan_id": "NG-HMO-001-hybasic-retail_individual",
+      "hmo_id": "NG-HMO-001",
+      "plan_name": "HyBasic",
+      "customer_type": "retail_individual",
+      "min_lives": 1,
+      "max_lives": null,
+      "lives_covered": null,
+      "premium": {
+        "amount_kobo": 66070,
+        "currency": "NGN",
+        "period": "annual",
+        "basis": "per_person",
+        "status": "VERIFIED_SNAPSHOT",
+        "source_url": "https://www.example.com",
+        "retrieved_date": "2026-08-27",
+        "source_date": null,
+        "snapshot_ref": "snapshot_2026-08-27.png",
+        "evidence_tier": "B"
+      },
+      "overall_limit": {
+        "status": "UNKNOWN"
+      },
+      "surgery_major": {
+        "status": "KNOWN",
+        "amount_kobo": 200000
+      },
+      "maternity": {
+        "status": "KNOWN",
+        "amount_kobo": 100000
+      },
+      "drugs": {
+        "status": "UNKNOWN"
+      },
+      "dental": {
+        "status": "UNKNOWN"
+      },
+      "diagnostics": {
+        "status": "UNKNOWN"
+      },
+      "wellness": {
+        "status": "UNKNOWN"
+      },
+      "provider_access": {
+        "system": "UNKNOWN",
+        "tiers": [],
+        "region": [
+          "NG"
+        ],
+        "named_facilities": [],
+        "raw": "Category C-D"
+      },
+      "payment_model": "UNKNOWN",
+      "waiting_periods": [],
+      "notes": "Snapshot-verified 2026-08-27 05:14-05:20 (URL+clock visible)"
+    },
+    {
+      "plan_id": "NG-HMO-001-hyprime-retail_individual",
+      "hmo_id": "NG-HMO-001",
+      "plan_name": "HyPrime",
+      "customer_type": "retail_individual",
+      "min_lives": 1,
+      "max_lives": null,
+      "lives_covered": null,
+      "premium": {
+        "amount_kobo": 181380,
+        "currency": "NGN",
+        "period": "annual",
+        "basis": "per_person",
+        "status": "VERIFIED_SNAPSHOT",
+        "source_url": "https://www.example.com",
+        "retrieved_date": "2026-08-27",
+        "source_date": null,
+        "snapshot_ref": "snapshot_2026-08-27.png",
+        "evidence_tier": "B"
+      },
+      "overall_limit": {
+        "status": "UNKNOWN"
+      },
+      "surgery_major": {
+        "status": "KNOWN",
+        "amount_kobo": 300000
+      },
+      "maternity": {
+        "status": "KNOWN",
+        "amount_kobo": 200000
+      },
+      "drugs": {
+        "status": "UNKNOWN"
+      },
+      "dental": {
+        "status": "UNKNOWN"
+      },
+      "diagnostics": {
+        "status": "UNKNOWN"
+      },
+      "wellness": {
+        "status": "UNKNOWN"
+      },
+      "provider_access": {
+        "system": "UNKNOWN",
+        "tiers": [],
+        "region": [
+          "NG"
+        ],
+        "named_facilities": [],
+        "raw": "Category B-D"
+      },
+      "payment_model": "UNKNOWN",
+      "waiting_periods": [],
+      "notes": "Snapshot-verified 2026-08-27 05:14-05:20 (URL+clock visible)"
+    },
+    {
+      "plan_id": "NG-HMO-001-hyprime_plus-retail_individual",
+      "hmo_id": "NG-HMO-001",
+      "plan_name": "HyPrime Plus",
+      "customer_type": "retail_individual",
+      "min_lives": 1,
+      "max_lives": null,
+      "lives_covered": null,
+      "premium": {
+        "amount_kobo": 480380,
+        "currency": "NGN",
+        "period": "annual",
+        "basis": "per_person",
+        "status": "VERIFIED_SNAPSHOT",
+        "source_url": "https://www.example.com",
+        "retrieved_date": "2026-08-27",
+        "source_date": null,
+        "snapshot_ref": "snapshot_2026-08-27.png",
+        "evidence_tier": "B"
+      },
+      "overall_limit": {
+        "status": "UNKNOWN"
+      },
+      "surgery_major": {
+        "status": "KNOWN",
+        "amount_kobo": 400000
+      },
+      "maternity": {
+        "status": "KNOWN",
+        "amount_kobo": 300000
+      },
+      "drugs": {
+        "status": "UNKNOWN"
+      },
+      "dental": {
+        "status": "UNKNOWN"
+      },
+      "diagnostics": {
+        "status": "UNKNOWN"
+      },
+      "wellness": {
+        "status": "UNKNOWN"
+      },
+      "provider_access": {
+        "system": "UNKNOWN",
+        "tiers": [],
+        "region": [
+          "NG"
+        ],
+        "named_facilities": [],
+        "raw": "Category A-D"
+      },
+      "payment_model": "UNKNOWN",
+      "waiting_periods": [],
+      "notes": "Snapshot-verified 2026-08-27 05:14-05:20 (URL+clock visible)"
+    },
+    {
+      "plan_id": "NG-HMO-001-hyprime_exclusive-retail_individual",
+      "hmo_id": "NG-HMO-001",
+      "plan_name": "HyPrime Exclusive",
+      "customer_type": "retail_individual",
+      "min_lives": 1,
+      "max_lives": null,
+      "lives_covered": null,
+      "premium": {
+        "amount_kobo": 748660,
+        "currency": "NGN",
+        "period": "annual",
+        "basis": "per_person",
+        "status": "VERIFIED_SNAPSHOT",
+        "source_url": "https://www.example.com",
+        "retrieved_date": "2026-08-27",
+        "source_date": null,
+        "snapshot_ref": "snapshot_2026-08-27.png",
+        "evidence_tier": "B"
+      },
+      "overall_limit": {
+        "status": "UNKNOWN"
+      },
+      "surgery_major": {
+        "status": "KNOWN",
+        "amount_kobo": 600000
+      },
+      "maternity": {
+        "status": "KNOWN",
+        "amount_kobo": 300000
+      },
+      "drugs": {
+        "status": "UNKNOWN"
+      },
+      "dental": {
+        "status": "UNKNOWN"
+      },
+      "diagnostics": {
+        "status": "UNKNOWN"
+      },
+      "wellness": {
+        "status": "UNKNOWN"
+      },
+      "provider_access": {
+        "system": "UNKNOWN",
+        "tiers": [],
+        "region": [
+          "NG"
+        ],
+        "named_facilities": [],
+        "raw": "Category A-D"
+      },
+      "payment_model": "UNKNOWN",
+      "waiting_periods": [],
+      "notes": "Snapshot-verified 2026-08-27 05:14-05:20 (URL+clock visible)"
+    }
+  ],
+  "plans_count": 86,
+  "report": {
+    "success": false,
+    "plans_validated": 95,
+    "plans_valid": 86,
+    "hmos_validated": 16,
+    "hmos_valid": 16,
+    "errors": 9,
+    "warnings": 0,
+    "error_list": [
+      {
+        "planId": "NG-HMO-009-sme_purple-sme",
+        "field": "min_lives"
+      },
+      {
+        "planId": "NG-HMO-036-family_of_6-retail_family",
+        "field": "lives_covered"
+      },
+      {
+        "planId": "NG-HMO-036-couple-retail_family",
+        "field": "lives_covered"
+      },
+      {
+        "planId": "NG-HMO-058-smart_lite-sme",
+        "field": "min_lives"
+      },
+      {
+        "planId": "NG-HMO-058-smart_care-sme",
+        "field": "min_lives"
+      },
+      {
+        "planId": "NG-HMO-058-smart_plus-sme",
+        "field": "min_lives"
+      },
+      {
+        "planId": "NG-HMO-058-smart_pearl-sme",
+        "field": "min_lives"
+      },
+      {
+        "planId": "NG-HMO-001-hybasic_family-retail_family",
+        "field": "lives_covered"
+      },
+      {
+        "planId": "NG-HMO-001-hyprime_family-retail_family",
+        "field": "lives_covered"
+      }
+    ],
+    "warning_list": []
+  }
+}

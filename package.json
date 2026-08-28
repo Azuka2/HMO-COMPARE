@@ -1,0 +1,16 @@
+{
+  "name": "hmo-blueprint-nigeria",
+  "version": "0.1.0",
+  "description": "Health Insurance Intelligence Engine for Nigeria",
+  "type": "module",
+  "scripts": {
+    "dev": "node src/dev.js",
+    "validate": "node src/data/loader.js",
+    "test": "node --test src/**/*.test.js"
+  },
+  "keywords": ["health", "insurance", "hmo", "nigeria"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {}
+}
