@@ -329,6 +329,404 @@
             }
         }
 
+        /* Assessment Screens */
+        .assessment-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--color-border);
+            border-radius: 2px;
+            margin-bottom: var(--spacing-lg);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-primary);
+            width: 0%;
+            transition: width var(--transition-base);
+        }
+
+        .progress-text {
+            font-size: var(--font-size-small);
+            color: var(--color-text-light);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .question-title {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-primary);
+            line-height: 1.3;
+        }
+
+        .question-helper {
+            font-size: var(--font-size-small);
+            color: var(--color-text-light);
+            margin-bottom: var(--spacing-lg);
+            font-style: italic;
+        }
+
+        .question-content {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            min-height: 48px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: var(--color-bg-alt);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: var(--color-primary-lighter);
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: var(--spacing-md);
+            cursor: pointer;
+        }
+
+        .option-label {
+            cursor: pointer;
+            flex: 1;
+            font-size: var(--font-size-base);
+        }
+
+        .text-input {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            font-family: inherit;
+            transition: border-color var(--transition-fast);
+            min-height: 48px;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .slider-container {
+            margin: var(--spacing-lg) 0;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--color-border);
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            border: none;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-size: var(--font-size-large);
+            font-weight: 700;
+            color: var(--color-primary);
+            margin: var(--spacing-md) 0;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-small);
+            color: var(--color-text-light);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .importance-scale {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin: var(--spacing-lg) 0;
+            flex-wrap: wrap;
+        }
+
+        .importance-btn {
+            flex: 1;
+            min-width: 60px;
+            padding: var(--spacing-md);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-bg);
+            font-size: var(--font-size-small);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .importance-btn:hover {
+            border-color: var(--color-primary);
+        }
+
+        .importance-btn.active {
+            border-color: var(--color-primary);
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .ranked-item {
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            min-height: 48px;
+            transition: all var(--transition-fast);
+        }
+
+        .ranked-item:hover {
+            border-color: var(--color-primary);
+        }
+
+        .ranked-item.selected {
+            border-color: var(--color-success);
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        .rank-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: var(--font-size-small);
+            flex-shrink: 0;
+            transition: all var(--transition-fast);
+        }
+
+        .ranked-item.selected .rank-number {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .ranked-label {
+            flex: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 120px;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            transition: all var(--transition-fast);
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--color-primary-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--color-bg-alt);
+            color: var(--color-text);
+            border-color: var(--color-border);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            border-color: var(--color-primary);
+            background: var(--color-bg);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .profile-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .profile-card {
+            background: var(--color-bg-alt);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .profile-title {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .profile-description {
+            font-size: var(--font-size-large);
+            line-height: 1.6;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .profile-item {
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .profile-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .profile-label {
+            font-size: var(--font-size-small);
+            color: var(--color-text-light);
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .profile-value {
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+            font-weight: 500;
+        }
+
+        .warning-box {
+            background: rgba(243, 156, 18, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .warning-text {
+            font-size: var(--font-size-small);
+            color: var(--color-text);
+        }
+
+        .priority-weights {
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .priority-weight {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+            font-size: var(--font-size-small);
+        }
+
+        .priority-weight-bar {
+            flex: 1;
+            height: 24px;
+            background: var(--color-border);
+            border-radius: 4px;
+            margin: 0 var(--spacing-md);
+            overflow: hidden;
+        }
+
+        .priority-weight-fill {
+            height: 100%;
+            background: var(--color-primary);
+            transition: width var(--transition-base);
+        }
+
+        .priority-weight-value {
+            font-weight: 600;
+            min-width: 40px;
+            text-align: right;
+        }
+
         /* Loading */
         .loading {
             display: inline-block;
@@ -354,6 +752,24 @@
 
             .landing-subheading {
                 font-size: var(--font-size-base);
+            }
+
+            .importance-scale {
+                gap: var(--spacing-xs);
+            }
+
+            .importance-btn {
+                min-width: 50px;
+                padding: var(--spacing-sm);
+                font-size: 12px;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                min-width: 100%;
             }
         }
     </style>
@@ -409,12 +825,42 @@
             </div>
         </div>
 
-        <!-- Assessment Screen (placeholder) -->
+        <!-- Assessment Screen -->
         <div id="screen-assessment" class="screen">
-            <div class="container">
-                <h2>Assessment - Coming Soon</h2>
-                <p>22 questions will appear here</p>
-                <button class="btn btn-primary" onclick="app.navigate('landing')">Back to Landing</button>
+            <div class="assessment-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text" id="progress-text"></div>
+                <div id="question-container"></div>
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="btn-back" style="display:none;" onclick="app.goBack()">← Back</button>
+                    <button class="btn btn-secondary" id="btn-skip" onclick="app.skip()">Skip</button>
+                    <button class="btn btn-primary" id="btn-continue" onclick="app.continue()">Continue →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Priority Profile Screen -->
+        <div id="screen-priority-profile" class="screen">
+            <div class="profile-container">
+                <div class="profile-card">
+                    <div class="profile-title">Your Profile</div>
+                    <div class="profile-description" id="profile-description"></div>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-title">What We Know</div>
+                    <div id="profile-details"></div>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-title">How We'll Rank</div>
+                    <div class="priority-weights" id="priority-weights"></div>
+                    <div id="unscored-warning"></div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="app.navigate('assessment', app.currentQuestion)">← Let me fix something</button>
+                    <button class="btn btn-primary" onclick="app.completeAssessment()">That's right — show me the plans</button>
+                </div>
             </div>
         </div>
 
@@ -422,51 +868,386 @@
         <div id="screen-results" class="screen">
             <div class="container">
                 <h2>Your Top 3 Plans</h2>
-                <p>Results will appear here</p>
+                <p>Results will appear here (Sprint 6)</p>
                 <button class="btn btn-primary" onclick="app.navigate('landing')">Back to Landing</button>
             </div>
         </div>
     </main>
 
     <script>
-        /**
-         * Application State & Navigation
-         */
+        const QUESTIONS = [
+            { id: 'Q1', group: 1, title: 'Who are we finding cover for?', type: 'single-select', options: [{ text: 'Just me', value: 'individual' }, { text: 'Me and my partner', value: 'couple' }, { text: 'My family', value: 'family' }, { text: 'My parents / older relatives', value: 'parents' }, { text: 'My staff', value: 'corporate' }], key: 'customer_type' },
+            { id: 'Q2', group: 1, title: 'Which state do you live in?', type: 'single-select', helper: 'We use this to tell you what to check about hospitals near you.', options: [{ text: 'Abia', value: 'Abia' }, { text: 'Adamawa', value: 'Adamawa' }, { text: 'Akwa Ibom', value: 'Akwa Ibom' }, { text: 'Anambra', value: 'Anambra' }, { text: 'Bauchi', value: 'Bauchi' }, { text: 'Bayelsa', value: 'Bayelsa' }, { text: 'Benue', value: 'Benue' }, { text: 'Borno', value: 'Borno' }, { text: 'Cross River', value: 'Cross River' }, { text: 'Delta', value: 'Delta' }, { text: 'Ebonyi', value: 'Ebonyi' }, { text: 'Edo', value: 'Edo' }, { text: 'Ekiti', value: 'Ekiti' }, { text: 'Enugu', value: 'Enugu' }, { text: 'FCT', value: 'FCT' }, { text: 'Gombe', value: 'Gombe' }, { text: 'Imo', value: 'Imo' }, { text: 'Jigawa', value: 'Jigawa' }, { text: 'Kaduna', value: 'Kaduna' }, { text: 'Kano', value: 'Kano' }, { text: 'Katsina', value: 'Katsina' }, { text: 'Kebbi', value: 'Kebbi' }, { text: 'Kogi', value: 'Kogi' }, { text: 'Kwara', value: 'Kwara' }, { text: 'Lagos', value: 'Lagos' }, { text: 'Nasarawa', value: 'Nasarawa' }, { text: 'Niger', value: 'Niger' }, { text: 'Ogun', value: 'Ogun' }, { text: 'Ondo', value: 'Ondo' }, { text: 'Osun', value: 'Osun' }, { text: 'Oyo', value: 'Oyo' }, { text: 'Plateau', value: 'Plateau' }, { text: 'Rivers', value: 'Rivers' }, { text: 'Sokoto', value: 'Sokoto' }, { text: 'Taraba', value: 'Taraba' }, { text: 'Yobe', value: 'Yobe' }, { text: 'Zamfara', value: 'Zamfara' }], key: 'state' },
+            { id: 'Q3', group: 1, title: 'How many people in total?', type: 'single-select', options: [{ text: '1', value: 1 }, { text: '2', value: 2 }, { text: '3–4', value: 4 }, { text: '5–9', value: 9 }, { text: '10–29', value: 29 }, { text: '30+', value: 30 }], key: 'lives' },
+            { id: 'Q4', group: 1, title: 'Roughly what ages?', type: 'multi-select', helper: 'Select all that apply', options: [{ text: 'Children under 18', value: 'children' }, { text: 'Adults 18–39', value: 'adults_18_39' }, { text: 'Adults 40–59', value: 'adults_40_59' }, { text: '60+', value: 'seniors' }], key: 'ages' },
+            { id: 'Q5', group: 2, title: 'What can you comfortably spend per year, in total?', type: 'budget-slider', helper: 'Drag the slider or tap the field to enter an amount', min: 20000, max: 3000000, key: 'budget_total' },
+            { id: 'Q6', group: 3, title: 'Do you need cover in more than one state?', type: 'single-select', options: [{ text: 'No, just my state', value: 'single' }, { text: 'Yes, a few states', value: 'few' }, { text: 'Yes, nationwide', value: 'nationwide' }, { text: 'I travel abroad too', value: 'international' }], key: 'geographic_need' },
+            { id: 'Q7', group: 3, title: 'Is there a hospital you already use and want to keep?', type: 'text-input', placeholder: 'Hospital name (optional)', helper: 'We\'ll add this to your verification list.', key: 'preferred_hospital' },
+            { id: 'Q8', group: 3, title: 'How much does hospital choice matter to you?', type: 'single-select', options: [{ text: 'I\'ll go wherever I\'m covered', value: 0 }, { text: 'I\'d like decent options', value: 5 }, { text: 'I want good hospitals', value: 8 }, { text: 'I want the best available, and I\'ll pay for it', value: 10 }], key: 'hospital_access' },
+            { id: 'Q9', group: 4, title: 'Is maternity cover important?', type: 'single-select', helper: 'Only 17% of plans publish maternity figures.', options: [{ text: 'Not relevant', value: 'not_relevant' }, { text: 'Maybe in future', value: 'maybe' }, { text: 'Yes, planning soon', value: 'planning' }, { text: 'Yes, critical', value: 10 }], key: 'maternity' },
+            { id: 'Q10', group: 4, title: 'Any children who\'d need cover?', type: 'single-select', options: [{ text: 'Yes', value: true }, { text: 'No', value: false }], key: 'has_children' },
+            { id: 'Q11', group: 4, title: 'Any parents or older relatives?', type: 'single-select', options: [{ text: 'Yes', value: true }, { text: 'No', value: false }], key: 'has_seniors' },
+            { id: 'Q12', group: 4, title: 'Does anyone have an ongoing condition needing regular treatment?', type: 'single-select', helper: 'We don\'t ask what the condition is — just how much cover you need.', options: [{ text: 'No', value: 'no' }, { text: 'Yes, managed', value: 'managed' }, { text: 'Yes, needs regular specialist care', value: 'specialist' }, { text: 'Prefer not to say', value: 'prefer_not' }], key: 'chronic' },
+            { id: 'Q13', group: 4, title: 'How important is specialist care?', type: 'importance-scale', key: 'specialist' },
+            { id: 'Q14', group: 4, title: 'How important is protection against a big surgery bill?', type: 'importance-scale', helper: 'Choosing "Critical" will rule out plans that don\'t cover major surgery at all.', key: 'surgery' },
+            { id: 'Q15', group: 4, title: 'How important are scans — MRI, CT, advanced diagnostics?', type: 'importance-scale', helper: 'Collected but not scored — no comparable data yet.', key: 'diagnostics' },
+            { id: 'Q16', group: 4, title: 'Dental, optical, ENT, wellness?', type: 'multi-select', helper: 'Select all that apply. Collected but not scored.', options: [{ text: 'Dental', value: 'dental' }, { text: 'Optical', value: 'optical' }, { text: 'ENT', value: 'ent' }, { text: 'Wellness', value: 'wellness' }], key: 'ancillary' },
+            { id: 'Q17', group: 4, title: 'How important is medication cover?', type: 'importance-scale', helper: 'Collected but not scored — no comparable data yet.', key: 'drugs' },
+            { id: 'Q18', group: 5, title: 'How much do you care about apps and telemedicine?', type: 'importance-scale', helper: 'Collected but not scored.', key: 'digital' },
+            { id: 'Q19', group: 5, title: 'How important is fast, human customer service?', type: 'importance-scale', helper: 'Collected but not scored.', key: 'service' },
+            { id: 'Q20', group: 5, title: 'How do you feel about rules — referrals, approvals, using set hospitals?', type: 'single-select', options: [{ text: 'Fine if it\'s cheaper', value: 0 }, { text: 'Some is OK', value: 3 }, { text: 'I want minimal hassle', value: 6 }, { text: 'I want to walk in and be treated', value: 10 }], key: 'restriction_tolerance' },
+            { id: 'Q21', group: 6, title: 'Pick your top 3 — what matters most?', type: 'ranked-selection', helper: 'Select exactly 3 options by tapping them in order.', options: [{ text: 'Low price', value: 'price' }, { text: 'Hospital quality', value: 'hospital_quality' }, { text: 'Surgery protection', value: 'surgery' }, { text: 'Maternity', value: 'maternity' }, { text: 'Medication', value: 'drugs' }, { text: 'Specialists', value: 'specialist' }, { text: 'Scans', value: 'diagnostics' }, { text: 'Dental & optical', value: 'ancillary' }, { text: 'Digital service', value: 'digital' }, { text: 'Fast support', value: 'service' }, { text: 'Wellness', value: 'wellness' }], key: 'top_priorities' },
+            { id: 'Q22', group: 6, title: 'If your plan let you down at the worst moment, what would you most regret not checking?', type: 'single-select', options: [{ text: 'Hospital wasn\'t covered', value: 'hospital_gap' }, { text: 'Limit was too low', value: 'limit_gap' }, { text: 'I still had to pay a lot', value: 'cost_gap' }, { text: 'Emergency was hard', value: 'emergency_gap' }, { text: 'Maternity gap', value: 'maternity_gap' }, { text: 'Surgery gap', value: 'surgery_gap' }, { text: 'Drugs excluded', value: 'drugs_gap' }, { text: 'Nobody answered', value: 'service_gap' }], key: 'biggest_fear' }
+        ];
+
         const app = {
+            currentQuestion: 1,
+            answers: {},
+            skipped: [],
             currentScreen: 'landing',
-            assessment: {},
-            recommendations: null,
 
-            navigate(screen) {
-                // Hide all screens
+            init() {
+                this.loadState();
+            },
+
+            loadState() {
+                const saved = sessionStorage.getItem('assessment_state');
+                if (saved) {
+                    const state = JSON.parse(saved);
+                    this.answers = state.answers || {};
+                    this.skipped = state.skipped || [];
+                    this.currentQuestion = state.currentQuestion || 1;
+                }
+            },
+
+            saveState() {
+                sessionStorage.setItem('assessment_state', JSON.stringify({
+                    answers: this.answers,
+                    skipped: this.skipped,
+                    currentQuestion: this.currentQuestion
+                }));
+            },
+
+            navigate(screen, questionNum = null) {
                 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-
-                // Show target screen
-                const targetScreen = document.getElementById(`screen-${screen}`);
-                if (targetScreen) {
-                    targetScreen.classList.add('active');
+                const target = document.getElementById(`screen-${screen}`);
+                if (target) {
+                    target.classList.add('active');
                     this.currentScreen = screen;
+                    if (screen === 'assessment' && questionNum) {
+                        this.currentQuestion = questionNum;
+                        this.renderQuestion(questionNum);
+                    } else if (screen === 'assessment') {
+                        this.renderQuestion(this.currentQuestion);
+                    }
                     window.scrollTo(0, 0);
                 }
             },
 
-            setAssessmentAnswer(question, answer) {
-                this.assessment[question] = answer;
+            renderQuestion(num) {
+                const q = QUESTIONS[num - 1];
+                if (!q) return;
+
+                this.currentQuestion = num;
+                this.saveState();
+
+                const progress = (num / QUESTIONS.length) * 100;
+                document.getElementById('progress-fill').style.width = progress + '%';
+                document.getElementById('progress-text').textContent = `Question ${num} of ${QUESTIONS.length}`;
+
+                const container = document.getElementById('question-container');
+                container.innerHTML = '';
+
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-content';
+
+                const title = document.createElement('h2');
+                title.className = 'question-title';
+                title.textContent = q.title;
+                qDiv.appendChild(title);
+
+                if (q.helper) {
+                    const helper = document.createElement('p');
+                    helper.className = 'question-helper';
+                    helper.textContent = q.helper;
+                    qDiv.appendChild(helper);
+                }
+
+                const optContainer = document.createElement('div');
+
+                switch (q.type) {
+                    case 'single-select':
+                        for (const opt of q.options) {
+                            const label = document.createElement('label');
+                            label.className = 'option';
+                            if (this.answers[q.key] === opt.value) label.classList.add('selected');
+
+                            const input = document.createElement('input');
+                            input.type = 'radio';
+                            input.name = q.key;
+                            input.value = opt.value;
+                            input.checked = this.answers[q.key] === opt.value;
+
+                            const labelText = document.createElement('span');
+                            labelText.className = 'option-label';
+                            labelText.textContent = opt.text;
+
+                            label.appendChild(input);
+                            label.appendChild(labelText);
+                            label.onclick = () => {
+                                this.answers[q.key] = opt.value;
+                                this.skipped = this.skipped.filter(x => x !== q.id);
+                                this.saveState();
+                                this.renderQuestion(num);
+                            };
+                            optContainer.appendChild(label);
+                        }
+                        break;
+
+                    case 'multi-select':
+                        const selected = this.answers[q.key] || [];
+                        for (const opt of q.options) {
+                            const label = document.createElement('label');
+                            label.className = 'option';
+                            if (selected.includes(opt.value)) label.classList.add('selected');
+
+                            const input = document.createElement('input');
+                            input.type = 'checkbox';
+                            input.name = q.key;
+                            input.value = opt.value;
+                            input.checked = selected.includes(opt.value);
+
+                            const labelText = document.createElement('span');
+                            labelText.className = 'option-label';
+                            labelText.textContent = opt.text;
+
+                            label.appendChild(input);
+                            label.appendChild(labelText);
+                            label.onclick = () => {
+                                const current = this.answers[q.key] || [];
+                                if (current.includes(opt.value)) {
+                                    this.answers[q.key] = current.filter(x => x !== opt.value);
+                                } else {
+                                    this.answers[q.key] = [...current, opt.value];
+                                }
+                                this.skipped = this.skipped.filter(x => x !== q.id);
+                                this.saveState();
+                                this.renderQuestion(num);
+                            };
+                            optContainer.appendChild(label);
+                        }
+                        break;
+
+                    case 'text-input':
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.className = 'text-input';
+                        input.placeholder = q.placeholder || '';
+                        input.value = this.answers[q.key] || '';
+                        input.onchange = () => {
+                            this.answers[q.key] = input.value;
+                            this.skipped = this.skipped.filter(x => x !== q.id);
+                            this.saveState();
+                        };
+                        optContainer.appendChild(input);
+                        break;
+
+                    case 'budget-slider':
+                        const sliderDiv = document.createElement('div');
+                        sliderDiv.className = 'slider-container';
+
+                        const current = this.answers[q.key] || 100000;
+
+                        const labels = document.createElement('div');
+                        labels.className = 'slider-labels';
+                        labels.innerHTML = '<span>₦20k</span><span>₦3m</span>';
+                        sliderDiv.appendChild(labels);
+
+                        const slider = document.createElement('input');
+                        slider.type = 'range';
+                        slider.className = 'slider';
+                        slider.min = q.min;
+                        slider.max = q.max;
+                        slider.value = current;
+
+                        const valueDiv = document.createElement('div');
+                        valueDiv.className = 'slider-value';
+                        valueDiv.textContent = '₦' + new Intl.NumberFormat('en-NG').format(current);
+
+                        slider.oninput = () => {
+                            valueDiv.textContent = '₦' + new Intl.NumberFormat('en-NG').format(slider.value);
+                            this.answers[q.key] = parseInt(slider.value);
+                            this.skipped = this.skipped.filter(x => x !== q.id);
+                            this.saveState();
+                        };
+
+                        sliderDiv.appendChild(slider);
+                        sliderDiv.appendChild(valueDiv);
+
+                        const notSureBtn = document.createElement('button');
+                        notSureBtn.className = 'btn btn-secondary';
+                        notSureBtn.style.marginTop = 'var(--spacing-lg)';
+                        notSureBtn.textContent = 'I\'m not sure yet';
+                        notSureBtn.onclick = () => {
+                            this.answers[q.key] = null;
+                            this.skipped = this.skipped.filter(x => x !== q.id);
+                            this.saveState();
+                            this.renderQuestion(num);
+                        };
+
+                        optContainer.appendChild(sliderDiv);
+                        optContainer.appendChild(notSureBtn);
+                        break;
+
+                    case 'importance-scale':
+                        const scaleDiv = document.createElement('div');
+                        scaleDiv.className = 'importance-scale';
+                        const current_val = this.answers[q.key] ?? -1;
+
+                        for (const val of [0, 3, 6, 8, 10]) {
+                            const btn = document.createElement('button');
+                            btn.className = 'importance-btn';
+                            if (current_val === val) btn.classList.add('active');
+
+                            const labels_map = { 0: 'Not important', 3: 'Nice to have', 6: 'Important', 8: 'Very important', 10: 'Critical' };
+                            btn.textContent = labels_map[val];
+                            btn.onclick = () => {
+                                this.answers[q.key] = val;
+                                this.skipped = this.skipped.filter(x => x !== q.id);
+                                this.saveState();
+                                this.renderQuestion(num);
+                            };
+                            scaleDiv.appendChild(btn);
+                        }
+                        optContainer.appendChild(scaleDiv);
+                        break;
+
+                    case 'ranked-selection':
+                        const currentRanked = this.answers[q.key] || [];
+                        for (const opt of q.options) {
+                            const item = document.createElement('div');
+                            item.className = 'ranked-item';
+                            if (currentRanked.includes(opt.value)) item.classList.add('selected');
+
+                            const rankNum = document.createElement('span');
+                            rankNum.className = 'rank-number';
+                            rankNum.textContent = currentRanked.indexOf(opt.value) + 1 || '–';
+
+                            const label = document.createElement('span');
+                            label.className = 'ranked-label';
+                            label.textContent = opt.text;
+
+                            item.appendChild(rankNum);
+                            item.appendChild(label);
+
+                            item.onclick = () => {
+                                let newRanked = [...currentRanked];
+                                if (newRanked.includes(opt.value)) {
+                                    newRanked = newRanked.filter(x => x !== opt.value);
+                                } else if (newRanked.length < 3) {
+                                    newRanked.push(opt.value);
+                                }
+                                this.answers[q.key] = newRanked;
+                                this.skipped = this.skipped.filter(x => x !== q.id);
+                                this.saveState();
+                                this.renderQuestion(num);
+                            };
+                            optContainer.appendChild(item);
+                        }
+                        break;
+                }
+
+                qDiv.appendChild(optContainer);
+                container.appendChild(qDiv);
+
+                const btnBack = document.getElementById('btn-back');
+                btnBack.style.display = num > 1 ? 'flex' : 'none';
+
+                const btnContinue = document.getElementById('btn-continue');
+                if (num === QUESTIONS.length) {
+                    btnContinue.textContent = 'Complete assessment';
+                } else {
+                    btnContinue.textContent = 'Continue →';
+                }
             },
 
-            async fetchRecommendations() {
-                // TODO: Call backend matching engine
-                // const response = await fetch('/api/match', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({ assessment: this.assessment })
-                // });
-                // this.recommendations = await response.json();
+            skip() {
+                const q = QUESTIONS[this.currentQuestion - 1];
+                if (!this.skipped.includes(q.id)) {
+                    this.skipped.push(q.id);
+                }
+                this.continue();
+            },
+
+            goBack() {
+                if (this.currentQuestion > 1) {
+                    this.currentQuestion--;
+                    this.renderQuestion(this.currentQuestion);
+                }
+            },
+
+            continue() {
+                if (this.currentQuestion < QUESTIONS.length) {
+                    this.currentQuestion++;
+                    this.renderQuestion(this.currentQuestion);
+                } else {
+                    this.complete();
+                }
+            },
+
+            complete() {
+                this.showPriorityProfile();
+                this.navigate('priority-profile');
+            },
+
+            showPriorityProfile() {
+                const customerTypeMap = {
+                    individual: 'Covering just you',
+                    couple: 'Covering you and your partner',
+                    family: 'Covering your family',
+                    parents: 'Covering your parents or older relatives',
+                    corporate: 'Covering your staff'
+                };
+
+                const lives = this.answers.lives || 1;
+                const budget = this.answers.budget_total || 0;
+                const state = this.answers.state || 'Nigeria';
+                const customerType = this.answers.customer_type || 'individual';
+
+                const profileDesc = `${customerTypeMap[customerType] || customerType} in ${state} on about ₦${new Intl.NumberFormat('en-NG').format(budget)} a year.`;
+                document.getElementById('profile-description').textContent = profileDesc;
+
+                let detailsHTML = '';
+                detailsHTML += '<div class="profile-item"><div class="profile-label">Type</div><div class="profile-value">' + (customerTypeMap[customerType] || customerType) + '</div></div>';
+                detailsHTML += '<div class="profile-item"><div class="profile-label">Number of people</div><div class="profile-value">' + lives + '</div></div>';
+                detailsHTML += '<div class="profile-item"><div class="profile-label">Annual budget</div><div class="profile-value">₦' + new Intl.NumberFormat('en-NG').format(budget) + '</div></div>';
+                detailsHTML += '<div class="profile-item"><div class="profile-label">Location</div><div class="profile-value">' + state + '</div></div>';
+                if (this.answers.top_priorities) {
+                    detailsHTML += '<div class="profile-item"><div class="profile-label">Top priorities</div><div class="profile-value">' + this.answers.top_priorities.join(', ') + '</div></div>';
+                }
+                if (this.answers.biggest_fear) {
+                    detailsHTML += '<div class="profile-item"><div class="profile-label">Biggest concern</div><div class="profile-value">' + this.answers.biggest_fear + '</div></div>';
+                }
+                document.getElementById('profile-details').innerHTML = detailsHTML;
+
+                let weightsHTML = '<div class="priority-weight"><span>Price</span><div class="priority-weight-bar"><div class="priority-weight-fill" style="width: 25%"></div></div><span class="priority-weight-value">25%</span></div>';
+                weightsHTML += '<div class="priority-weight"><span>Surgery</span><div class="priority-weight-bar"><div class="priority-weight-fill" style="width: 25%"></div></div><span class="priority-weight-value">25%</span></div>';
+                weightsHTML += '<div class="priority-weight"><span>Maternity</span><div class="priority-weight-bar"><div class="priority-weight-fill" style="width: 25%"></div></div><span class="priority-weight-value">25%</span></div>';
+                weightsHTML += '<div class="priority-weight"><span>Hospital Access</span><div class="priority-weight-bar"><div class="priority-weight-fill" style="width: 25%"></div></div><span class="priority-weight-value">25%</span></div>';
+                document.getElementById('priority-weights').innerHTML = weightsHTML;
+
+                const unscored = ['Medication', 'Diagnostics', 'Digital', 'Wellness'];
+                let unscoredHTML = '<div class="warning-box"><div class="warning-title">⚠️ Not scored (no public data)</div><div class="warning-text">You told us ' + unscored.join(', ') + ' matter. We don\'t have enough comparable data to score these yet.</div></div>';
+                document.getElementById('unscored-warning').innerHTML = unscoredHTML;
+            },
+
+            completeAssessment() {
+                alert('Assessment complete! Priority profile ready.\n\nNext: Sprint 5 (Priority confirmation) → Sprint 6 (Results page)');
+                this.navigate('landing');
             }
         };
 
-        // Initialize
-        console.log('HMO Blueprint Nigeria loaded');
+        app.init();
     </script>
 </body>
 </html>
