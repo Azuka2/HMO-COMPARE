@@ -87,6 +87,19 @@ function handleMatch(req, res) {
         return;
       }
 
+      // Normalize assessment: convert budget_total (yearly NGN) to budget_per_person_kobo (monthly per person)
+      if (assessment.budget_total !== null && assessment.budget_total !== undefined) {
+        const monthlyTotal = (assessment.budget_total / 12) * 100; // Convert NGN to kobo
+        const personCount = assessment.lives || 1;
+        assessment.budget_per_person_kobo = monthlyTotal / personCount;
+      } else {
+        assessment.budget_per_person_kobo = null;
+      }
+
+      // Ensure required fields exist
+      assessment.has_seniors = assessment.has_seniors || false;
+      assessment.top_priorities = assessment.top_priorities || [];
+
       // Compute priority vector
       const priority = computePriorityVector(assessment);
       assessment.priority_vector = priority.weights;
