@@ -10,21 +10,51 @@
 import { BenefitStatus, PremiumStatus, CustomerType, ProductType } from '../types/index.js';
 
 /**
+ * Determine if a product has known pricing
+ * Used to separate "ranked by price" vs "price to verify" groups
+ */
+export function isPriceKnown(plan) {
+  // Telemedicine products: excluded from HMO ranking entirely
+  if (plan.product_type === ProductType.TELEMEDICINE) {
+    return false;
+  }
+
+  // Full HMO with published premium: known price
+  if (plan.product_type === ProductType.FULL_HMO && plan.premium?.amount_kobo) {
+    return true;
+  }
+
+  // Quote-required or not-published: price unknown
+  if (plan.product_type === ProductType.QUOTE_REQUIRED ||
+      plan.product_type === ProductType.NOT_PUBLISHED) {
+    return false;
+  }
+
+  // Default: if no premium, price unknown
+  return plan.premium?.amount_kobo ? true : false;
+}
+
+/**
  * Stage 1: Data Eligibility
  *
  * Dropped before anything else:
+ * - TELEMEDICINE products (not HMO)
  * - NOT_PUBLICLY_VERIFIED plans (12 plans)
  * - EXCLUDE matchability HMOs
- * - No premium amount
+ *
+ * KEPT but marked for separate display:
+ * - QUOTE_REQUIRED (full HMO, price unknown)
+ * - NOT_PUBLISHED (full HMO, price unknown)
+ *
+ * Additional filters:
  * - retail_family with no lives_covered
  * - sme/corporate with no min_lives (when user is SME)
  */
 export function stage1DataEligibility(plans, userCustomerType) {
   return plans.filter((plan) => {
-    // Exclude telemedicine, quote-required, and not-published products from HMO ranking
-    if (plan.product_type === ProductType.TELEMEDICINE ||
-        plan.product_type === ProductType.QUOTE_REQUIRED ||
-        plan.product_type === ProductType.NOT_PUBLISHED) {
+    // Exclude ONLY telemedicine from HMO ranking
+    // Telemedicine is not a hospital-based HMO
+    if (plan.product_type === ProductType.TELEMEDICINE) {
       return false;
     }
 
@@ -33,10 +63,9 @@ export function stage1DataEligibility(plans, userCustomerType) {
       return false;
     }
 
-    // No premium → drop
-    if (!plan.premium || !plan.premium.amount_kobo) {
-      return false;
-    }
+    // Quote-required and not-published are kept but will be marked for separate display
+    // They can pass through stages 2-4 for benefit/feature matching
+    // But will be excluded from budget ranking in stage 3
 
     // retail_family without lives_covered → drop
     if (plan.customer_type === 'retail_family' && !plan.lives_covered) {
@@ -113,27 +142,43 @@ export function stage2CustomerTypeAndLives(
 /**
  * Stage 3: Budget
  *
- * Soft filter: keep if premium ≤ budget × 1.15
- * Plans in 100–115% band are kept and flagged
- * If budget = "not sure", no budget filter
+ * For plans WITH KNOWN PRICE:
+ * - Soft filter: keep if premium ≤ budget × 1.15
+ * - Plans in 100–115% band are kept and flagged
+ *
+ * For plans WITH UNKNOWN PRICE (quote-required, not-published):
+ * - Pass through separately marked as "price_to_verify"
+ * - Do NOT apply budget filtering
+ * - Do NOT flag as over-budget
+ *
+ * If budget = "not sure", no budget filter (all pass through)
  */
 export function stage3Budget(plans, budgetPerPersonKobo) {
   if (budgetPerPersonKobo === null || budgetPerPersonKobo === undefined) {
-    // "Not sure" → no filtering
-    return plans.map((p) => ({ plan: p, over_budget_flag: false }));
+    // "Not sure" → no filtering, all pass through
+    return plans.map((p) => ({ plan: p, over_budget_flag: false, price_to_verify: !isPriceKnown(p) }));
   }
 
   const maxBudget = budgetPerPersonKobo * 1.15;
+  const result = [];
 
-  return plans
-    .map((plan) => {
+  for (const plan of plans) {
+    // Plans with known price: apply budget filter
+    if (isPriceKnown(plan)) {
       const premiumPerPerson = plan.premium.amount_kobo;
       const over_budget_flag = premiumPerPerson > budgetPerPersonKobo && premiumPerPerson <= maxBudget;
-      return { plan, over_budget_flag };
-    })
-    .filter(({ plan }) => {
-      return plan.premium.amount_kobo <= budgetPerPersonKobo * 1.15;
-    });
+
+      if (premiumPerPerson <= maxBudget) {
+        result.push({ plan, over_budget_flag, price_to_verify: false });
+      }
+    } else {
+      // Plans with unknown price: pass through without budget filtering
+      // These will be displayed in separate "PRICE TO VERIFY" section
+      result.push({ plan, over_budget_flag: false, price_to_verify: true });
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -436,16 +481,24 @@ const statusOrder = {
 };
 
 export function tieBreak(a, b) {
+  // Sort price-unknown (to_verify) products after price-known products
+  const aHasPrice = a.plan.premium?.amount_kobo;
+  const bHasPrice = b.plan.premium?.amount_kobo;
+  if (aHasPrice && !bHasPrice) return -1; // a comes first
+  if (!aHasPrice && bHasPrice) return 1;  // b comes first
+
   // 1. Higher confidence
   if (a.confidence.score !== b.confidence.score) {
     return b.confidence.score - a.confidence.score;
   }
 
-  // 2. Better premium status
-  const statusA = statusOrder[a.plan.premium.status] || 999;
-  const statusB = statusOrder[b.plan.premium.status] || 999;
-  if (statusA !== statusB) {
-    return statusA - statusB;
+  // 2. Better premium status (skip if no premium)
+  if (a.plan.premium && b.plan.premium) {
+    const statusA = statusOrder[a.plan.premium.status] || 999;
+    const statusB = statusOrder[b.plan.premium.status] || 999;
+    if (statusA !== statusB) {
+      return statusA - statusB;
+    }
   }
 
   // 3. More scored dimensions
@@ -455,8 +508,8 @@ export function tieBreak(a, b) {
     return scoredB - scoredA;
   }
 
-  // 4. Lower premium
-  if (a.plan.premium.amount_kobo !== b.plan.premium.amount_kobo) {
+  // 4. Lower premium (skip if no premium)
+  if (aHasPrice && bHasPrice && a.plan.premium.amount_kobo !== b.plan.premium.amount_kobo) {
     return a.plan.premium.amount_kobo - b.plan.premium.amount_kobo;
   }
 
@@ -496,12 +549,12 @@ export function matchPlans(plans, assessment, hmoDataCompleteness) {
   const afterCritical = stage4CriticalBenefitExclusion(withBudgetFlag, criticalBenefits);
 
   // Stage 5: Score all dimensions
-  const scored = afterCritical.map(({ plan, over_budget_flag }) => {
+  const scored = afterCritical.map(({ plan, over_budget_flag, price_to_verify }) => {
     const scores = {};
     let scoredDims = 0;
 
-    // Price
-    if (assessment.budget_per_person_kobo !== null && assessment.budget_per_person_kobo !== undefined) {
+    // Price (skip if no premium available)
+    if (plan.premium?.amount_kobo && assessment.budget_per_person_kobo !== null && assessment.budget_per_person_kobo !== undefined) {
       scores.price = scorePrice(plan.premium.amount_kobo, assessment.budget_per_person_kobo);
       if (scores.price !== null) scoredDims++;
     } else {
@@ -567,6 +620,7 @@ export function matchPlans(plans, assessment, hmoDataCompleteness) {
       confidence,
       scored_dimensions: scoredDims,
       over_budget_flag,
+      price_to_verify: price_to_verify || false,
       audit: {
         stage_1_passed: true,
         stage_2_passed: true,
@@ -577,15 +631,19 @@ export function matchPlans(plans, assessment, hmoDataCompleteness) {
     };
   });
 
-  // Filter out plans with no match score
-  const ranked = scored
-    .filter((s) => s.match_score !== null)
-    .sort((a, b) => {
-      if (a.match_score !== b.match_score) {
-        return b.match_score - a.match_score;
-      }
-      return tieBreak(a, b);
-    });
+  // Separate ranked plans from price-to-verify plans
+  // Price-to-verify: keep even if match_score is null (will display in separate section)
+  // Regular: only keep if match_score is not null
+  const priceKnown = scored.filter((s) => s.match_score !== null && !s.price_to_verify);
+  const priceToVerify = scored.filter((s) => s.price_to_verify);
+
+  // Sort ranked plans by match score
+  const ranked = priceKnown.sort((a, b) => {
+    if (a.match_score !== b.match_score) {
+      return b.match_score - a.match_score;
+    }
+    return tieBreak(a, b);
+  });
 
   // Stage 7: Diversity Cap
   const top3 = stage7DiversityCap(ranked, 3);
@@ -597,6 +655,7 @@ export function matchPlans(plans, assessment, hmoDataCompleteness) {
     top_3: top3,
     alternatives,
     all_ranked: Array.isArray(ranked) ? ranked : [],
+    price_to_verify: priceToVerify,
     total_candidate_pool: plans.length,
     after_stage_1: stage1DataEligibility(plans, assessment.customer_type).length,
     after_stage_2: stage2CustomerTypeAndLives(
