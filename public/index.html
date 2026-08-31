@@ -47,7 +47,7 @@
         }
 
         @media (prefers-color-scheme: dark) {
-            :root {
+            :root:not([data-theme="light"]) {
                 --color-text: #ecf0f1;
                 --color-text-light: #bdc3c7;
                 --color-border: #34495e;
@@ -55,6 +55,29 @@
                 --color-bg-alt: #2d2d2d;
                 --color-primary-lighter: #1a2a3a;
             }
+        }
+
+        :root[data-theme="dark"] {
+            --color-text: #ecf0f1;
+            --color-text-light: #bdc3c7;
+            --color-border: #34495e;
+            --color-bg: #1a1a1a;
+            --color-bg-alt: #2d2d2d;
+            --color-primary-lighter: #1a2a3a;
+        }
+
+        :root[data-theme="light"] {
+            --color-primary: #1a365d;
+            --color-primary-light: #2d5a8c;
+            --color-primary-lighter: #eef2f5;
+            --color-accent: #e74c3c;
+            --color-success: #27ae60;
+            --color-warning: #f39c12;
+            --color-text: #2c3e50;
+            --color-text-light: #7f8c8d;
+            --color-border: #ecf0f1;
+            --color-bg: #ffffff;
+            --color-bg-alt: #f8f9fa;
         }
 
         * {
@@ -568,22 +591,23 @@
 
         .nav-buttons {
             display: flex;
-            gap: var(--spacing-md);
-            margin-top: var(--spacing-xl);
-            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-lg);
+            flex-wrap: nowrap;
+            justify-content: center;
         }
 
         .btn {
-            flex: 1;
-            min-width: 120px;
-            padding: var(--spacing-md) var(--spacing-lg);
+            flex: 0 1 auto;
+            min-width: auto;
+            padding: var(--spacing-sm) var(--spacing-md);
             border-radius: var(--radius-md);
             border: 2px solid transparent;
             cursor: pointer;
-            font-size: var(--font-size-base);
+            font-size: var(--font-size-small);
             font-weight: 600;
             transition: all var(--transition-fast);
-            min-height: 48px;
+            min-height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -911,11 +935,13 @@
             }
 
             .nav-buttons {
-                flex-direction: column;
+                flex-wrap: wrap;
+                justify-content: flex-start;
             }
 
             .btn {
-                min-width: 100%;
+                flex: 1 1 auto;
+                min-width: 100px;
             }
         }
     </style>
@@ -930,6 +956,7 @@
             <nav style="display: flex; gap: var(--spacing-lg); align-items: center;">
                 <a href="#" onclick="app.navigate('learn'); return false;" style="color: white; text-decoration: none; font-size: var(--font-size-small);">Learn</a>
                 <a href="#" onclick="app.navigate('about'); return false;" style="color: white; text-decoration: none; font-size: var(--font-size-small);">About</a>
+                <button id="theme-toggle" onclick="app.toggleTheme()" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: var(--radius-md); padding: var(--spacing-xs) var(--spacing-sm); cursor: pointer; font-size: 18px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast);" title="Toggle dark mode">☀️</button>
             </nav>
         </div>
     </header>
@@ -1264,6 +1291,36 @@
 
             init() {
                 this.loadState();
+                this.initTheme();
+            },
+
+            initTheme() {
+                const savedTheme = localStorage.getItem('hmo-blueprint-theme');
+                if (savedTheme) {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                    this.updateThemeButton(savedTheme);
+                } else {
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (prefersDark) {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                        this.updateThemeButton('dark');
+                    }
+                }
+            },
+
+            toggleTheme() {
+                const current = document.documentElement.getAttribute('data-theme');
+                const newTheme = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('hmo-blueprint-theme', newTheme);
+                this.updateThemeButton(newTheme);
+            },
+
+            updateThemeButton(theme) {
+                const button = document.getElementById('theme-toggle');
+                if (button) {
+                    button.textContent = theme === 'dark' ? '🌙' : '☀️';
+                }
             },
 
             loadState() {
@@ -2734,10 +2791,180 @@ I'm interested in learning more about this plan. Can you help me verify:
                     card.innerHTML = `
                         <h3 style="font-size: var(--font-size-base); font-weight: 700; color: var(--color-primary); margin-bottom: var(--spacing-sm);">${content.title}</h3>
                         <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin-bottom: var(--spacing-md);">${content.desc}</p>
-                        <button class="btn btn-secondary" style="width: 100%;">Read More</button>
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="app.showArticle('${content.id}')">Read More</button>
                     `;
                     container.appendChild(card);
                 }
+            },
+
+            /**
+             * Article content database
+             */
+            ARTICLES: {
+                'insurance-basics-1': {
+                    title: 'What HMO Actually Means',
+                    content: `
+                        <p>An HMO (Health Maintenance Organization) is a type of health insurance that provides healthcare through a network of doctors and hospitals.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">How HMOs work:</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li><strong>Network:</strong> You use doctors and hospitals in their approved network</li>
+                            <li><strong>Primary care:</strong> Usually you choose a primary care doctor first</li>
+                            <li><strong>Referrals:</strong> You need referrals to see specialists</li>
+                            <li><strong>Coverage:</strong> Out-of-network care may not be covered</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Before you buy an HMO plan:</h4>
+                        <ul style="margin-left: var(--spacing-lg);">
+                            <li>Check if your preferred doctor or hospital is in the network</li>
+                            <li>Understand the referral process</li>
+                            <li>Know the premium and any out-of-pocket costs</li>
+                            <li>Read the fine print about exclusions</li>
+                        </ul>
+                    `
+                },
+                'benefit-limits-1': {
+                    title: 'Why Overall Limit ≠ Surgery Limit',
+                    content: `
+                        <p>One of the most common mistakes is assuming the "overall limit" applies to every benefit. It doesn't.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Example:</h4>
+                        <p><strong>Plan says:</strong> Overall limit ₦5,000,000</p>
+                        <p><strong>Plan says:</strong> Surgery limit ₦1,500,000</p>
+                        <p><strong>What this means:</strong> You can spend up to ₦5M across ALL benefits in a year, BUT surgery alone caps at ₦1.5M. If you have a ₦2M surgery, you only get ₦1.5M coverage.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What to verify:</h4>
+                        <ul style="margin-left: var(--spacing-lg);">
+                            <li>The specific limit for the benefit you need most</li>
+                            <li>How limits interact (do multiple benefits share one overall pool?)</li>
+                            <li>Any sub-limits within benefits</li>
+                        </ul>
+                    `
+                },
+                'maternity-waiting-1': {
+                    title: 'The 12-Month Maternity Waiting Period',
+                    content: `
+                        <p>Many HMOs exclude maternity coverage for the first 12 months after enrollment. This is critical to know if you're planning to have children soon.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What a 12-month waiting period means:</h4>
+                        <p>If you enroll in an HMO on January 1, maternity benefits don't start until January 1 of the following year. Any pregnancy or childbirth during that time is NOT covered.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Questions to ask:</h4>
+                        <ul style="margin-left: var(--spacing-lg);">
+                            <li>Is there a waiting period? If yes, how long?</li>
+                            <li>Does the waiting period apply to existing pregnancies?</li>
+                            <li>Are emergency pregnancy complications covered even during the waiting period?</li>
+                        </ul>
+                    `
+                },
+                'hospital-choice-1': {
+                    title: 'Your Hospital Being on the List Doesn\'t Mean Your Plan Uses It',
+                    content: `
+                        <p>Just because a hospital appears on an HMO's network list doesn't guarantee they'll accept your specific plan or your plan tier.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Why hospitals vary:</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li><strong>Tier differences:</strong> The hospital might accept Tier A plans but your plan is Tier B</li>
+                            <li><strong>Department differences:</strong> Some departments might not accept your plan</li>
+                            <li><strong>Status changes:</strong> Hospital networks change frequently</li>
+                            <li><strong>Specific wards:</strong> Private rooms might be out-of-network even if general wards are in-network</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What you MUST do:</h4>
+                        <p>Call the hospital AND the HMO to confirm your exact plan is accepted before you go for treatment.</p>
+                    `
+                },
+                'parents-insurance-1': {
+                    title: 'Buying Insurance for Aging Parents',
+                    content: `
+                        <p>Insuring aging parents requires special considerations that are different from insuring younger, healthier people.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Key considerations:</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li><strong>Pre-existing conditions:</strong> May be excluded or subject to waiting periods</li>
+                            <li><strong>Higher premiums:</strong> Age increases cost significantly</li>
+                            <li><strong>Limited coverage:</strong> Some HMOs limit coverage for seniors</li>
+                            <li><strong>Specialist access:</strong> Confirm your parent's specialist is covered</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Questions to ask:</h4>
+                        <ul style="margin-left: var(--spacing-lg);">
+                            <li>How does the HMO handle existing chronic conditions?</li>
+                            <li>What's the referral process for specialists?</li>
+                            <li>Are prescription medications covered?</li>
+                        </ul>
+                    `
+                },
+                'verification-checklist': {
+                    title: 'Before You Pay: Verification Checklist',
+                    content: `
+                        <p>Before you pay for any HMO plan, contact the HMO and ask these 8 questions:</p>
+                        <ol style="margin-left: var(--spacing-lg);">
+                            <li><strong>Hospital:</strong> Does [My Preferred Hospital] accept this exact plan?</li>
+                            <li><strong>Doctor:</strong> Is my current doctor in this plan's network?</li>
+                            <li><strong>Referrals:</strong> What's the referral process to see a specialist?</li>
+                            <li><strong>Limits:</strong> What are the exact limits for surgery, maternity, and drugs?</li>
+                            <li><strong>Waiting periods:</strong> Are there waiting periods for major benefits?</li>
+                            <li><strong>Exclusions:</strong> What is explicitly NOT covered?</li>
+                            <li><strong>Premium:</strong> Is this the current price? Has it changed?</li>
+                            <li><strong>Authorization:</strong> Do I need pre-authorization for major procedures?</li>
+                        </ol>
+                    `
+                },
+                'capitation-explained': {
+                    title: 'Capitation vs Fee-for-Service',
+                    content: `
+                        <p>How an HMO pays its doctors affects how care is delivered. There are two main models:</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Capitation:</h4>
+                        <p>The HMO pays doctors a fixed monthly amount per patient, regardless of how many times you visit or what services you get. The doctor benefits from fewer visits and less treatment.</p>
+                        <p><em>Pros:</em> Lower costs for the HMO and you. <em>Cons:</em> Doctors might undertreat to save money.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Fee-for-Service:</h4>
+                        <p>The HMO pays doctors per visit or per procedure. The doctor benefits from more visits and more treatment.</p>
+                        <p><em>Pros:</em> More incentive to provide care. <em>Cons:</em> Higher costs and risk of overtreatment.</p>
+                    `
+                },
+                'exclusions-matter': {
+                    title: 'Common HMO Exclusions',
+                    content: `
+                        <p>Most HMO plans exclude certain treatments, conditions, or types of care. Understanding these exclusions before you buy is critical.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Common exclusions:</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li>Mental health and psychology services</li>
+                            <li>Dental and optical care</li>
+                            <li>Cosmetic procedures</li>
+                            <li>Certain medications</li>
+                            <li>Alternative medicine (herbal, traditional)</li>
+                            <li>Treatments for weight loss</li>
+                            <li>Fertility treatments</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What to do:</h4>
+                        <p>Ask the HMO specifically about any treatments you think you might need. Don't assume they're covered.</p>
+                    `
+                }
+            },
+
+            /**
+             * Show article in inline modal
+             */
+            showArticle(articleId) {
+                const article = this.ARTICLES[articleId];
+                if (!article) {
+                    alert('Article not found');
+                    return;
+                }
+
+                const modal = document.createElement('div');
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: var(--spacing-md);';
+                modal.innerHTML = `
+                    <div style="background: var(--color-bg); border-radius: var(--radius-lg); max-width: 600px; max-height: 80vh; overflow-y: auto; padding: var(--spacing-lg); box-shadow: var(--shadow-lg);">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-lg);">
+                            <h2 style="font-size: var(--font-size-xl); color: var(--color-primary); margin: 0;">${article.title}</h2>
+                            <button onclick="this.closest('div').closest('div').remove();" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--color-text-light);">✕</button>
+                        </div>
+                        <div style="color: var(--color-text); line-height: 1.8;">
+                            ${article.content}
+                        </div>
+                        <div style="margin-top: var(--spacing-lg); display: flex; gap: var(--spacing-md);">
+                            <button class="btn btn-primary" onclick="app.navigate('landing')">Start Assessment</button>
+                            <button class="btn btn-secondary" onclick="this.closest('div').closest('div').remove();">Close</button>
+                        </div>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+                modal.onclick = (e) => {
+                    if (e.target === modal) modal.remove();
+                };
             },
 
             /**
@@ -2846,14 +3073,21 @@ I'm interested in learning more about this plan. Can you help me verify:
 
                 document.getElementById('benefit-select').onchange = (e) => {
                     calc.selectedBenefit = e.target.value;
+                    this.performGapCalculation();
                 };
                 document.getElementById('amount-input').onchange = () => {
                     calc.userRequirement = parseInt(document.getElementById('amount-input').value) || 0;
+                    this.performGapCalculation();
                 };
             },
 
             updateAmountDisplay() {
                 // Triggered after quick select buttons
+                const calc = this.currentGapCalculation;
+                if (calc) {
+                    calc.userRequirement = parseInt(document.getElementById('amount-input').value) || 0;
+                    this.performGapCalculation();
+                }
             },
 
             updateSelectedPlans() {
@@ -2866,6 +3100,9 @@ I'm interested in learning more about this plan. Can you help me verify:
                     }
                 });
                 this.currentGapCalculation.selectedPlanIndices = selected.slice(0, 3);
+                if (this.currentGapCalculation.selectedPlanIndices.length > 0) {
+                    this.performGapCalculation();
+                }
             },
 
             performGapCalculation() {
