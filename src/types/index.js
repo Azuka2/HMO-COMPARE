@@ -71,6 +71,22 @@ export const CustomerType = {
 };
 
 /**
+ * Product Type
+ * § FULL_HMO: Hospital-based health insurance with provider access
+ * § TELEMEDICINE: Virtual/online consultations only, no hospital access
+ * § QUOTE_REQUIRED: Premium not publicly published, requires quote
+ * § NOT_PUBLISHED: Product exists but details not publicly available
+ * § OTHER: Classification unclear or data incomplete
+ */
+export const ProductType = {
+  FULL_HMO: 'full_hmo',
+  TELEMEDICINE: 'telemedicine',
+  QUOTE_REQUIRED: 'quote_required',
+  NOT_PUBLISHED: 'not_published',
+  OTHER: 'other'
+};
+
+/**
  * Evidence Tier
  * § A: Independent third-party verification (none currently)
  * § B: Official company sources
@@ -266,6 +282,7 @@ export default {
   PremiumStatus,
   HmoMatchability,
   CustomerType,
+  ProductType,
   EvidenceTier,
   ProviderAccessSystem,
   PaymentModel

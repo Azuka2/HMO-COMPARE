@@ -9,7 +9,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { BenefitStatus, PremiumStatus, CustomerType } from '../types/index.js';
+import { BenefitStatus, PremiumStatus, CustomerType, ProductType } from '../types/index.js';
 import { validatePlan, validateHmo, ValidationReport, ValidationError } from './validators.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -192,6 +192,35 @@ function createPremium(amountKobo, status, sourceStatus, retrieved, notes) {
 }
 
 /**
+ * Classify product type based on CSV data
+ * Determines whether a plan is full HMO, telemedicine, quote-based, etc.
+ */
+function classifyProductType(row, plan_name, premium_ngn, provider_access, source_status, notes) {
+  // Telemedicine-only products (explicit in notes or provider_access)
+  if (provider_access && provider_access.toLowerCase().includes('telemedicine')) {
+    return ProductType.TELEMEDICINE;
+  }
+
+  // NOT PUBLISHED marker
+  if (plan_name === 'NOT PUBLISHED') {
+    return ProductType.NOT_PUBLISHED;
+  }
+
+  // Quote-required or not publicly verified
+  if (source_status === 'NOT_PUBLICLY_VERIFIED') {
+    return ProductType.QUOTE_REQUIRED;
+  }
+
+  // No premium means quote-required
+  if (!premium_ngn || premium_ngn === null || premium_ngn === '') {
+    return ProductType.QUOTE_REQUIRED;
+  }
+
+  // Default: full HMO (hospital-based)
+  return ProductType.FULL_HMO;
+}
+
+/**
  * Transform CSV row into Plan object
  */
 function transformRow(row, hmoMap, report) {
@@ -247,11 +276,14 @@ function transformRow(row, hmoMap, report) {
       wellness: createBenefitValue(null, BenefitStatus.UNKNOWN)
     };
 
+    const productType = classifyProductType(row, plan_name, premium_ngn, provider_access, source_status, notes);
+
     const plan = {
       plan_id,
       hmo_id,
       hmo_name: row.hmo_name,
       plan_name,
+      product_type: productType,
       customer_type: customer_type || null,
       min_lives: min_lives || null,
       max_lives: null,

@@ -7,7 +7,7 @@
  * No LLM. No randomness. No HMO identifiers in logic.
  */
 
-import { BenefitStatus, PremiumStatus, CustomerType } from '../types/index.js';
+import { BenefitStatus, PremiumStatus, CustomerType, ProductType } from '../types/index.js';
 
 /**
  * Stage 1: Data Eligibility
@@ -21,6 +21,13 @@ import { BenefitStatus, PremiumStatus, CustomerType } from '../types/index.js';
  */
 export function stage1DataEligibility(plans, userCustomerType) {
   return plans.filter((plan) => {
+    // Exclude telemedicine, quote-required, and not-published products from HMO ranking
+    if (plan.product_type === ProductType.TELEMEDICINE ||
+        plan.product_type === ProductType.QUOTE_REQUIRED ||
+        plan.product_type === ProductType.NOT_PUBLISHED) {
+      return false;
+    }
+
     // NOT_PUBLICLY_VERIFIED → drop
     if (plan.premium?.status === PremiumStatus.NOT_PUBLICLY_VERIFIED) {
       return false;
