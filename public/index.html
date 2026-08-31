@@ -1373,13 +1373,17 @@
             },
 
             loadPublicSectorData() {
-                // Load NHIA programmes from data file
+                // Load NHIA programmes and state schemes from data file
                 fetch('/src/data/public-sector.js')
                     .then(response => response.text())
                     .then(text => {
                         try {
                             // Extract NHIA programmes data from the module
                             // For now, we'll use inline data since we can't use ES modules directly in the browser
+
+                            // Initialize state schemes as empty (will be populated by P3.3 when verified data is available)
+                            window.stateSchemes = [];
+
                             window.nhiaProgrammes = [
                                 {
                                     nhia_id: 'NG-NHIA-PUBLIC-001',
@@ -2739,19 +2743,14 @@
             },
 
             renderPublicOptions() {
-                // Load NHIA programmes if available
                 let html = '';
+                const selectedState = this.answers.state || 'Unknown';
 
                 try {
-                    // Try to access NHIA data
+                    // Show NHIA programmes
                     if (window.nhiaProgrammes && window.nhiaProgrammes.length > 0) {
-                        const selectedState = this.answers.state;
                         const relevantProgrammes = window.nhiaProgrammes.filter(p => {
-                            // TISHIP: only for students
-                            if (p.nhia_id === 'NG-NHIA-TISHIP-001') {
-                                return false; // User said they're looking for general coverage, not student
-                            }
-                            // Most others: potentially relevant to any user
+                            if (p.nhia_id === 'NG-NHIA-TISHIP-001') return false;
                             return p.status === 'active';
                         });
 
@@ -2763,12 +2762,18 @@
                                         In addition to private HMOs, Nigeria's National Health Insurance Authority (NHIA) offers public health programmes. These operate separately from private HMOs but may provide relevant coverage.
                                     </p>
 
-                                    <div style="display: grid; gap: var(--spacing-md);">
+                                    <div style="display: grid; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
                                         ${relevantProgrammes.slice(0, 3).map(p => this.renderNhiaOption(p)).join('')}
                                     </div>
 
+                                    <!-- STATE SCHEME SECTION -->
+                                    <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: var(--spacing-lg); margin-top: var(--spacing-lg);">
+                                        <h3 style="font-size: var(--font-size-large); color: var(--color-primary); margin: 0 0 var(--spacing-md) 0;">State Health Scheme</h3>
+                                        ${this.renderStateSchemeOption(selectedState)}
+                                    </div>
+
                                     <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: var(--spacing-md) 0 0 0; line-height: 1.6; font-style: italic;">
-                                        Public programmes and private HMOs serve different populations and have different structures. We show them separately so you can understand both options.
+                                        Public programmes, state schemes, and private HMOs serve different populations and have different structures. We show them separately so you can understand all available options.
                                     </p>
                                 </div>
                             `;
@@ -2779,6 +2784,61 @@
                 }
 
                 return html;
+            },
+
+            renderStateSchemeOption(state) {
+                if (!state) {
+                    return `
+                        <div style="background: white; padding: var(--spacing-lg); border-radius: var(--radius-md); border-left: 4px solid var(--color-text-light);">
+                            <p style="color: var(--color-text-light); margin: 0; font-size: var(--font-size-small);">
+                                State selection not available. Select your state during assessment to see relevant state health scheme options.
+                            </p>
+                        </div>
+                    `;
+                }
+
+                // Look for state scheme in window.stateSchemes (currently empty, but structure ready)
+                const stateScheme = window.stateSchemes && window.stateSchemes.find(s => s.state === state);
+
+                if (stateScheme) {
+                    return `
+                        <div style="background: white; padding: var(--spacing-lg); border-radius: var(--radius-md); border-left: 4px solid #27ae60;">
+                            <h4 style="font-size: var(--font-size-base); color: var(--color-primary); margin: 0 0 var(--spacing-sm) 0;">${stateScheme.scheme_name}</h4>
+                            <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: 0 0 var(--spacing-md) 0;">
+                                <strong>Agency:</strong> ${stateScheme.governing_agency || 'State Health Insurance Authority'}
+                            </p>
+                            <p style="font-size: var(--font-size-small); color: var(--color-text); margin: 0 0 var(--spacing-sm) 0;">
+                                ${stateScheme.eligibility_summary || 'Open to eligible state residents'}
+                            </p>
+                            ${stateScheme.contribution && stateScheme.contribution.status === 'KNOWN' ? `
+                                <p style="font-size: var(--font-size-small); color: var(--color-primary); margin: var(--spacing-sm) 0; font-weight: 500;">
+                                    Cost: ₦${(stateScheme.contribution.amount_kobo / 100).toLocaleString('en-NG')}
+                                </p>
+                            ` : `
+                                <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: var(--spacing-sm) 0;">
+                                    Cost: NOT_PUBLICLY_PUBLISHED
+                                </p>
+                            `}
+                            ${stateScheme.official_url ? `
+                                <a href="${stateScheme.official_url}" target="_blank" style="display: inline-block; margin-top: var(--spacing-md); color: #27ae60; text-decoration: none; font-weight: 500; font-size: var(--font-size-small);">
+                                    Learn more →
+                                </a>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                // No state scheme found
+                return `
+                    <div style="background: white; padding: var(--spacing-lg); border-radius: var(--radius-md); border-left: 4px solid var(--color-warning);">
+                        <p style="color: var(--color-text); margin: 0; line-height: 1.6;">
+                            <strong>State scheme information is not yet publicly verified for ${state}.</strong>
+                        </p>
+                        <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: var(--spacing-sm) 0 0 0;">
+                            Contact your State Health Insurance Agency directly for current programme details, eligibility, and enrollment.
+                        </p>
+                    </div>
+                `;
             },
 
             renderNhiaOption(programme) {
