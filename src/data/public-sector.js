@@ -17,48 +17,411 @@ import { BenefitStatus, PremiumStatus, EvidenceTier } from '../types/index.js';
 
 /**
  * NHIA Programmes
- * Verified from official NHIA sources (to be populated with Phase 3.2 research)
+ * Verified from official NHIA sources as of 2026-08-31
  *
- * Structure prepared. Data to be researched from official sources.
+ * Data structure: P3.1 complete
+ * Verified records: P3.2 starter pack imported
+ * Unknown fields: marked NOT_PUBLICLY_PUBLISHED (never null/zero)
  */
 export const nhiaProgrammes = [
-  // PLACEHOLDER - To be populated by P3.2 NHIA Research
-  // Examples of structure (not actual data):
-  // {
-  //   nhia_id: 'NG-NHIA-BHCPF-001',
-  //   programme_name: 'Basic Health Care Provision Fund',
-  //   programme_type: 'BHCPF',
-  //   status: 'active',
-  //   target_populations: ['pregnant_women', 'children_under_5'],
-  //   eligibility_summary: 'Primary health care for vulnerable populations',
-  //   eligibility_criteria: [
-  //     'Pregnant women aged 15-49',
-  //     'Children under 5 years'
-  //   ],
-  //   enrollment_pathway: 'Through primary health center in your community',
-  //   contribution: {
-  //     status: BenefitStatus.NOT_COVERED, // BHCPF is government-funded
-  //     amount_kobo: 0
-  //   },
-  //   contribution_status: PremiumStatus.CURRENT,
-  //   benefit_package: [],
-  //   overall_limit: {
-  //     status: BenefitStatus.UNKNOWN,
-  //     amount_kobo: null,
-  //     note: 'Information not publicly available'
-  //   },
-  //   primary_care: {
-  //     status: BenefitStatus.KNOWN,
-  //     amount_kobo: null,
-  //     note: 'Primary health care coverage included'
-  //   },
-  //   official_url: 'https://nhia.gov.ng/programmes/bhcpf',
-  //   retrieved_date: '2026-08-31',
-  //   source_date: 'NOT_YET_VERIFIED',
-  //   evidence_tier: EvidenceTier.B,
-  //   provenance_note: 'To be verified from official NHIA source',
-  //   last_verified: null
-  // }
+  // Record 1: Public Sector Social Health Insurance Programme
+  {
+    nhia_id: 'NG-NHIA-PUBLIC-001',
+    programme_name: 'Public Sector Social Health Insurance Programme',
+    programme_type: 'PSSHIP',
+    status: 'active',
+    target_populations: ['government_workers', 'public_sector_families'],
+    eligibility_summary: 'Government and public-sector workers and their families',
+    eligibility_criteria: [
+      'Government/public-sector employment',
+      'Eligible family members as defined by programme'
+    ],
+    enrollment_pathway: 'Through applicable public-sector/NHIA enrollment process',
+    geographic_scope: ['NG'],
+
+    contribution: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null,
+      note: 'NOT_PUBLICLY_PUBLISHED in source page reviewed'
+    },
+    contribution_status: PremiumStatus.NOT_PUBLICLY_VERIFIED,
+
+    overall_limit: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null,
+      note: 'NOT_PUBLICLY_PUBLISHED'
+    },
+    primary_care: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null,
+      note: 'See official NHIA programme documentation'
+    },
+    specialist: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    hospitalization: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    drugs: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    maternity: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    emergency: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+
+    waiting_periods: [],
+    exclusions: [],
+    limitations: [],
+
+    official_url: 'https://www.nhia.gov.ng/services-1/',
+    retrieved_date: '2026-08-31',
+    source_date: 'NOT_EXPLICITLY_DATED',
+    evidence_tier: EvidenceTier.B,
+    provenance_note: 'Official NHIA programme index page',
+    last_verified: '2026-08-31'
+  },
+
+  // Record 2: GIFSHIP
+  {
+    nhia_id: 'NG-NHIA-GIFSHIP-001',
+    programme_name: 'Group, Individual and Family Social Health Insurance Programme (GIFSHIP)',
+    programme_type: 'GIFSHIP',
+    status: 'active',
+    programme_subtypes: ['GIFSHIP', 'GIFSHIP-r', 'GIFSHIP-n'],
+    target_populations: ['individuals', 'families', 'groups', 'employed', 'unemployed', 'retirees', 'nysc_members'],
+    eligibility_summary: 'Individuals, families and groups in various employment/life status categories',
+    eligibility_criteria: [
+      'Employed or unemployed individual/family member',
+      'Group member in registered group',
+      'NYSC member (GIFSHIP-n)',
+      'Retiree (GIFSHIP-r)'
+    ],
+    enrollment_pathway: 'Visit NHIA office, register, pay premium online or at bank, receive NHIA ID card',
+    geographic_scope: ['NG'],
+
+    contribution: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null,
+      note: 'NOT_PUBLICLY_PUBLISHED in source page reviewed (verify current premium with NHIA)'
+    },
+    contribution_status: PremiumStatus.VERIFY,
+
+    overall_limit: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    primary_care: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    specialist: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    hospitalization: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    drugs: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    maternity: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    emergency: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+
+    waiting_periods: [],
+    exclusions: [],
+    limitations: [],
+
+    official_url: 'https://www.nhia.gov.ng/service/land-insurance/',
+    retrieved_date: '2026-08-31',
+    source_date: 'NOT_EXPLICITLY_DATED',
+    evidence_tier: EvidenceTier.B,
+    provenance_note: 'Official NHIA GIFSHIP programme page',
+    last_verified: '2026-08-31'
+  },
+
+  // Record 3: OPSSHIP
+  {
+    nhia_id: 'NG-NHIA-OPSSHIP-001',
+    programme_name: 'Organised Private Sector Social Health Insurance Programme (OPSSHIP)',
+    programme_type: 'OPSSHIP',
+    status: 'active',
+    target_populations: ['private_sector_workers', 'private_sector_families'],
+    eligibility_summary: 'Private-sector workers and their families from companies with 5+ employees',
+    eligibility_criteria: [
+      'Employment in private company with 5 or more employees',
+      'Employee spouse',
+      'Up to 4 children under 18 years',
+      'Additional family members at extra cost'
+    ],
+    enrollment_pathway: 'Employer application to NHIA; NHIA coordinates employee enrollment',
+    geographic_scope: ['NG'],
+    minimum_employer_size: 5,
+    family_structure: 'Employee + spouse + up to 4 children under 18; additional members at extra cost',
+    administration: 'NHIA',
+
+    contribution: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null,
+      note: 'NOT_PUBLICLY_PUBLISHED in source page reviewed'
+    },
+    contribution_status: PremiumStatus.VERIFY,
+
+    overall_limit: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    primary_care: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    specialist: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    hospitalization: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    drugs: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    maternity: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    emergency: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+
+    waiting_periods: [],
+    exclusions: [],
+    limitations: [],
+
+    official_url: 'https://www.nhia.gov.ng/service/gifship/',
+    retrieved_date: '2026-08-31',
+    source_date: 'NOT_EXPLICITLY_DATED',
+    evidence_tier: EvidenceTier.B,
+    provenance_note: 'Official NHIA OPSSHIP programme page',
+    last_verified: '2026-08-31'
+  },
+
+  // Record 4: TISHIP
+  {
+    nhia_id: 'NG-NHIA-TISHIP-001',
+    programme_name: 'Tertiary Institutions Social Health Insurance Programme (TISHIP)',
+    programme_type: 'TISHIP',
+    status: 'active',
+    target_populations: ['tertiary_institution_students'],
+    eligibility_summary: 'Students in tertiary institutions (universities, polytechnics, other approved institutions)',
+    eligibility_criteria: [
+      'Currently enrolled student in approved tertiary institution',
+      'Federal university, state university, private university, polytechnic, or other approved institution'
+    ],
+    enrollment_pathway: 'Student registers through institution health center',
+    geographic_scope: ['NG'],
+    institutions: ['federal_universities', 'state_universities', 'private_universities', 'polytechnics', 'other_tertiary'],
+
+    contribution: {
+      status: BenefitStatus.KNOWN,
+      amount_kobo: 200000, // ₦2,000 per year in kobo
+      note: 'Published by NHIA'
+    },
+    contribution_status: PremiumStatus.CURRENT,
+    contribution_basis: 'per_student_per_year',
+
+    overall_limit: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null,
+      note: 'NOT_PUBLICLY_PUBLISHED'
+    },
+    primary_care: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    specialist: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    hospitalization: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    drugs: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    maternity: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    emergency: {
+      status: BenefitStatus.KNOWN,
+      amount_kobo: null,
+      note: 'For emergency care outside school: notify nearest NHIA/SSHIA office within 48 hours'
+    },
+
+    waiting_periods: [],
+    exclusions: [],
+    limitations: [],
+
+    official_url: 'https://www.nhia.gov.ng/service/car-insurance/',
+    retrieved_date: '2026-08-31',
+    source_date: 'NOT_EXPLICITLY_DATED',
+    evidence_tier: EvidenceTier.B,
+    provenance_note: 'Official NHIA TISHIP programme page - premium verified as ₦2,000/year',
+    last_verified: '2026-08-31'
+  },
+
+  // Record 5: Vulnerable Group Fund
+  {
+    nhia_id: 'NG-NHIA-VGF-001',
+    programme_name: 'Vulnerable Group Fund (VGF)',
+    programme_type: 'VGF',
+    status: 'active',
+    target_populations: ['vulnerable_populations'],
+    eligibility_summary: 'Vulnerable populations as identified and supported under VGF',
+    eligibility_criteria: [
+      'People with disabilities',
+      'Refugees',
+      'Human-trafficking survivors',
+      'Pregnant women',
+      'Other vulnerable groups as defined by NHIA'
+    ],
+    enrollment_pathway: 'Determine eligibility and enroll through NHIA/state office',
+    geographic_scope: ['NG'],
+    legal_basis: 'Established under Part III, Section 25(1) of the NHIA Act 2022',
+
+    contribution: {
+      status: BenefitStatus.NOT_COVERED,
+      amount_kobo: null,
+      note: 'Not applicable for direct user premium pricing'
+    },
+    contribution_status: PremiumStatus.NOT_APPLICABLE,
+
+    overall_limit: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null,
+      note: 'NOT_PUBLICLY_PUBLISHED - See official NHIA/state documentation'
+    },
+    primary_care: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    specialist: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    hospitalization: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    drugs: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    maternity: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    emergency: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+
+    waiting_periods: [],
+    exclusions: [],
+    limitations: [],
+
+    official_url: 'https://www.nhia.gov.ng/vulnerable-group/',
+    retrieved_date: '2026-08-31',
+    source_date: 'NOT_EXPLICITLY_DATED',
+    evidence_tier: EvidenceTier.B,
+    provenance_note: 'Official NHIA Vulnerable Group Fund page',
+    last_verified: '2026-08-31'
+  },
+
+  // Record 6: BHCPF
+  {
+    nhia_id: 'NG-NHIA-BHCPF-001',
+    programme_name: 'Basic Health Care Provision Fund (BHCPF)',
+    programme_type: 'BHCPF',
+    status: 'active',
+    target_populations: ['eligible_populations'],
+    eligibility_summary: 'Healthcare access through registered primary and secondary healthcare facilities',
+    eligibility_criteria: [
+      'Determined by applicable eligibility criteria',
+      'Verify with State Social Health Insurance Authority'
+    ],
+    enrollment_pathway: 'Contact relevant State Social Health Insurance Authority',
+    geographic_scope: ['NG'],
+    provider_network: 'Registered primary and secondary healthcare facilities (public and private)',
+
+    contribution: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null,
+      note: 'NOT_PUBLICLY_PUBLISHED for general user premium'
+    },
+    contribution_status: PremiumStatus.NOT_PUBLICLY_VERIFIED,
+
+    overall_limit: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    primary_care: {
+      status: BenefitStatus.KNOWN,
+      amount_kobo: null,
+      note: 'Preventive, promotive, curative and rehabilitative services subject to applicable benefit package'
+    },
+    specialist: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    hospitalization: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    drugs: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    maternity: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+    emergency: {
+      status: BenefitStatus.UNKNOWN,
+      amount_kobo: null
+    },
+
+    waiting_periods: [],
+    exclusions: [],
+    limitations: [],
+
+    official_url: 'https://www.nhia.gov.ng/basic-health-care-provision-fund/',
+    retrieved_date: '2026-08-31',
+    source_date: 'NOT_EXPLICITLY_DATED',
+    evidence_tier: EvidenceTier.B,
+    provenance_note: 'Official NHIA BHCPF page',
+    last_verified: '2026-08-31'
+  }
 ];
 
 /**
