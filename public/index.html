@@ -2006,6 +2006,9 @@
                         <!-- What you get -->
                         ${this.renderWhatYouGet(primary)}
 
+                        <!-- Full benefit table -->
+                        ${this.renderBenefitTable(primary)}
+
                         <!-- Watch out -->
                         ${this.renderWatchOut(primary)}
 
@@ -2015,11 +2018,14 @@
                         <!-- Confidence -->
                         ${this.renderConfidence(primary)}
 
+                        <!-- Provider verification -->
+                        ${this.renderProviderVerification(primary)}
+
                         <!-- Verify before paying -->
                         ${this.renderVerifyBeforePaying(primary)}
 
                         <!-- Strong alternatives -->
-                        ${alternatives.length > 0 ? this.renderAlternatives(alternatives) : ''}
+                        ${alternatives.length > 0 ? this.renderAlternatives(alternatives, primary) : ''}
 
                         <!-- Couldn't compare -->
                         ${this.renderCouldNotCompare(result)}
@@ -2247,6 +2253,77 @@
                 `;
             },
 
+            renderBenefitTable(result) {
+                const plan = result.plan;
+                const tableId = 'benefit-table-' + Math.random().toString(36).substr(2, 9);
+
+                const benefitRows = [
+                    { label: 'Overall annual limit', key: 'overall_limit' },
+                    { label: 'Major surgery', key: 'surgery_major' },
+                    { label: 'Maternity', key: 'maternity' },
+                    { label: 'Emergency admission', key: 'emergency' },
+                    { label: 'Medication', key: 'drugs' },
+                    { label: 'Diagnostics (MRI/CT)', key: 'diagnostics' },
+                    { label: 'Dental', key: 'dental' },
+                    { label: 'Optical', key: 'optical' }
+                ];
+
+                let tableHTML = '';
+                for (const row of benefitRows) {
+                    const benefit = plan[row.key] || { status: 'UNKNOWN' };
+                    const statusBadge = this.getStatusBadge(benefit.status);
+                    const amount = benefit.amount_kobo ? `₦${(benefit.amount_kobo / 100).toLocaleString('en-NG')}` : '—';
+
+                    tableHTML += `
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: var(--spacing-md); color: var(--color-text);">${row.label}</td>
+                            <td style="padding: var(--spacing-md); text-align: right; font-weight: 500; color: var(--color-primary);">${amount}</td>
+                            <td style="padding: var(--spacing-md); text-align: center;">${statusBadge}</td>
+                        </tr>
+                    `;
+                }
+
+                return `
+                    <div style="margin-bottom: var(--spacing-xl);">
+                        <details style="cursor: pointer;">
+                            <summary style="font-size: var(--font-size-base); font-weight: 600; color: var(--color-primary); padding: var(--spacing-md); background: var(--color-bg-alt); border-radius: var(--radius-md); user-select: none; margin-bottom: var(--spacing-md);">
+                                📋 See full benefit details
+                            </summary>
+                            <div style="background: white; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse; font-size: var(--font-size-small);">
+                                    <thead style="background: var(--color-bg-alt); border-bottom: 2px solid var(--color-border);">
+                                        <tr>
+                                            <th style="padding: var(--spacing-md); text-align: left; color: var(--color-primary); font-weight: 600;">Benefit</th>
+                                            <th style="padding: var(--spacing-md); text-align: right; color: var(--color-primary); font-weight: 600;">Amount</th>
+                                            <th style="padding: var(--spacing-md); text-align: center; color: var(--color-primary); font-weight: 600;">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${tableHTML}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: var(--spacing-md) 0 0 0; line-height: 1.6;">
+                                <strong>Status key:</strong> ✅ = Published | ❓ = Not published | ⚠️ = Partial coverage | 🔄 = Verify before paying
+                            </p>
+                        </details>
+                    </div>
+                `;
+            },
+
+            getStatusBadge(status) {
+                const badges = {
+                    'KNOWN': '✅',
+                    'NOT_COVERED': '❌',
+                    'UNKNOWN': '❓',
+                    'PARTIAL': '⚠️',
+                    'UNDISCLOSED': '🔄',
+                    'UNLIMITED': '♾️',
+                    'VERIFY': '🔄'
+                };
+                return badges[status] || '❓';
+            },
+
             renderWatchOut(result) {
                 const plan = result.plan;
                 const warnings = [];
@@ -2358,16 +2435,53 @@
                     `${Math.round(conf.score * 100)}% evidence confidence`
                 ];
 
+                const confidenceExplanations = {
+                    'HIGH': 'Strong published information is available for the factors that mattered most to you. This plan publishes clear details on key benefits.',
+                    'MEDIUM': 'Useful information is available, but some important details are missing or not publicly verified. The recommendation still works, but verify a few things before paying.',
+                    'LOW': 'Important plan information is incomplete or could not be verified publicly. This doesn\'t mean the plan is bad — it means the HMO publishes less detail than others. Ask them directly about your priorities.'
+                };
+
+                const confidenceEmoji = {
+                    'HIGH': '✅',
+                    'MEDIUM': '⚠️',
+                    'LOW': '❓'
+                };
+
                 return `
                     <div style="margin-bottom: var(--spacing-xl);">
-                        <h2 style="font-size: var(--font-size-xl); color: var(--color-primary); margin-bottom: var(--spacing-md);">Confidence</h2>
+                        <h2 style="font-size: var(--font-size-xl); color: var(--color-primary); margin-bottom: var(--spacing-md);">How certain is this match?</h2>
                         <div style="background: white; padding: var(--spacing-lg); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-                            <p style="font-size: var(--font-size-large); font-weight: bold; color: var(--color-primary); margin: 0 0 var(--spacing-md) 0;">${conf.level} confidence</p>
+                            <p style="font-size: var(--font-size-large); font-weight: bold; color: var(--color-primary); margin: 0 0 var(--spacing-md) 0;">${confidenceEmoji[conf.level]} ${conf.level} confidence</p>
+                            <p style="font-size: var(--font-size-base); color: var(--color-text); margin: 0 0 var(--spacing-md) 0; line-height: 1.6;">
+                                ${confidenceExplanations[conf.level] || confidenceExplanations['MEDIUM']}
+                            </p>
+                            <p style="font-size: var(--font-size-small); font-weight: 500; color: var(--color-primary); margin: 0 0 var(--spacing-sm) 0;">Evidence we used:</p>
                             <ul style="list-style: none; padding: 0; margin: 0; font-size: var(--font-size-small);">
                                 ${drivers.map(d => `<li style="padding: var(--spacing-xs) 0; color: var(--color-text); line-height: 1.5;">✓ ${d}</li>`).join('')}
                             </ul>
-                            <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: var(--spacing-md) 0 0 0; line-height: 1.6; font-style: italic;">
-                                Confidence describes our evidence, not this plan's quality. A good plan can score LOW here simply because the HMO publishes little.
+                        </div>
+                    </div>
+                `;
+            },
+
+            renderProviderVerification(result) {
+                const plan = result.plan;
+                const hmoName = plan.hmo_name || 'this HMO';
+                const providerAccess = plan.provider_access || {};
+
+                return `
+                    <div style="margin-bottom: var(--spacing-xl);">
+                        <h2 style="font-size: var(--font-size-xl); color: var(--color-primary); margin-bottom: var(--spacing-md);">Check your hospital</h2>
+                        <div style="background: var(--color-primary-lighter); padding: var(--spacing-lg); border-radius: var(--radius-md); border-left: 4px solid var(--color-primary);">
+                            <p style="color: var(--color-text); margin: 0 0 var(--spacing-md) 0; line-height: 1.6;">
+                                Hospital availability can depend on the exact plan and your location. <strong>Verify that your preferred hospital is in network before you pay.</strong>
+                            </p>
+                            <p style="color: var(--color-text); margin: 0; font-size: var(--font-size-small); line-height: 1.6;">
+                                ${this.answers.preferred_hospital ? `
+                                    You told us you use <strong>${this.answers.preferred_hospital}</strong>. Contact ${hmoName} and confirm this hospital is available on your chosen plan, ideally with your provider tier or category.
+                                ` : `
+                                    You didn't name a preferred hospital. Before paying, call ${hmoName} and ask for hospitals near you and confirm they accept this exact plan.
+                                `}
                             </p>
                         </div>
                     </div>
@@ -2409,32 +2523,54 @@
                 `;
             },
 
-            renderAlternatives(alts) {
+            renderAlternatives(alts, primary) {
                 if (!alts || alts.length === 0) {
                     return '';
                 }
 
                 return `
                     <div style="margin-bottom: var(--spacing-xl);">
-                        <h2 style="font-size: var(--font-size-xl); color: var(--color-primary); margin-bottom: var(--spacing-md);">Strong alternatives</h2>
+                        <h2 style="font-size: var(--font-size-xl); color: var(--color-primary); margin-bottom: var(--spacing-md);">Other strong options</h2>
                         <div style="display: grid; gap: var(--spacing-md);">
                             ${alts.map((alt, idx) => {
                                 const plan = alt.plan;
                                 const pricePerPerson = plan.premium?.amount_kobo ? (plan.premium.amount_kobo / 100).toLocaleString('en-NG') : 'Price not available';
+                                const primaryPrice = primary?.plan?.premium?.amount_kobo || 0;
+                                const altPrice = plan.premium?.amount_kobo || 0;
+                                const priceDiff = altPrice - primaryPrice;
+                                const primarySurgery = primary?.plan?.surgery_major?.amount_kobo || 0;
+                                const altSurgery = plan.surgery_major?.amount_kobo || 0;
+
+                                let tradeoffText = '';
+                                if (Math.abs(priceDiff) > primaryPrice * 0.1) {
+                                    if (priceDiff < 0) {
+                                        tradeoffText = `Costs ₦${Math.abs(priceDiff / 100).toLocaleString('en-NG')} less per person per year`;
+                                    } else {
+                                        tradeoffText = `Costs ₦${(priceDiff / 100).toLocaleString('en-NG')} more per person per year`;
+                                    }
+                                }
+                                if (altSurgery > primarySurgery && altSurgery > 0) {
+                                    if (tradeoffText) tradeoffText += ', but ';
+                                    tradeoffText += `stronger published surgery coverage`;
+                                }
+
+                                const altLabel = idx === 0 ? 'STRONG ALTERNATIVE' : 'ANOTHER GOOD OPTION';
+
                                 return `
                                     <div style="background: white; padding: var(--spacing-lg); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
                                         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
                                             <div>
-                                                <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: 0 0 var(--spacing-xs) 0;">#${idx + 2}</p>
+                                                <p style="font-size: var(--font-size-small); color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 var(--spacing-xs) 0; font-weight: 500;">${altLabel}</p>
                                                 <h3 style="font-size: var(--font-size-large); color: var(--color-primary); margin: 0 0 var(--spacing-xs) 0;">${plan.hmo_name}</h3>
-                                                <p style="color: var(--color-text); margin: 0;">${plan.plan_name}</p>
+                                                <p style="color: var(--color-text); margin: 0; font-size: var(--font-size-small);">${plan.plan_name}</p>
                                             </div>
                                             <div style="text-align: right;">
                                                 <p style="font-size: 2rem; font-weight: bold; color: var(--color-primary); margin: 0;">${Math.min(alt.match_score, 95)}%</p>
                                                 <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: 0;">match</p>
                                             </div>
                                         </div>
-                                        <p style="font-size: var(--font-size-small); color: var(--color-text); margin: 0 0 var(--spacing-md) 0;"><strong>₦${pricePerPerson}</strong> /person/year</p>
+                                        <p style="font-size: var(--font-size-small); color: var(--color-text); margin: 0 0 var(--spacing-sm) 0;"><strong>₦${pricePerPerson}</strong> per person/year</p>
+                                        ${tradeoffText ? `<p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: 0 0 var(--spacing-md) 0; line-height: 1.6;">💡 ${tradeoffText}</p>` : ''}
                                         ${plan.surgery_major?.status === 'KNOWN' ? `<p style="font-size: var(--font-size-small); color: var(--color-text-light); margin: 0;">Surgery: ₦${(plan.surgery_major.amount_kobo / 100).toLocaleString('en-NG')}</p>` : ''}
                                     </div>
                                 `;
@@ -2995,29 +3131,84 @@ I'm interested in learning more about this plan. Can you help me verify:
 
                 container.innerHTML = '';
 
-                const CONTENT = [
-                    { id: 'insurance-basics-1', title: 'What HMO Actually Means', desc: 'How HMOs work and what you need to verify' },
-                    { id: 'benefit-limits-1', title: 'Why Overall Limit ≠ Surgery Limit', desc: 'Understanding specific benefit limits' },
-                    { id: 'maternity-waiting-1', title: 'The 12-Month Maternity Waiting Period', desc: 'What to ask before you buy' },
-                    { id: 'hospital-choice-1', title: 'Your Hospital Being on the List Doesn\'t Mean Your Plan Uses It', desc: 'Understanding provider networks' },
-                    { id: 'parents-insurance-1', title: 'Buying Insurance for Aging Parents', desc: 'Special considerations for seniors' },
-                    { id: 'verification-checklist', title: 'Before You Pay: Verification Checklist', desc: 'Eight questions to ask first' },
-                    { id: 'capitation-explained', title: 'Capitation vs Fee-for-Service', desc: 'How HMOs pay doctors and hospitals' },
-                    { id: 'exclusions-matter', title: 'Common HMO Exclusions', desc: 'What is actually excluded from your plan' }
+                const CATEGORIES = [
+                    {
+                        name: 'HMO BASICS',
+                        articles: [
+                            { id: 'insurance-basics-1', title: 'What HMO Actually Means', desc: 'How HMOs work and what you need to verify' },
+                            { id: 'hmo-vs-nhia', title: 'HMO vs NHIA', desc: 'Understand both options available in Nigeria' },
+                            { id: 'hospital-choice-1', title: 'Hospital Networks Change', desc: 'Why being on the list doesn\'t guarantee coverage' },
+                            { id: 'parents-insurance-1', title: 'Insuring Aging Parents', desc: 'Special considerations for seniors' }
+                        ]
+                    },
+                    {
+                        name: 'MONEY & COSTS',
+                        articles: [
+                            { id: 'premium-explained', title: 'Understanding Premiums', desc: 'What you pay and why it varies' },
+                            { id: 'capitation-explained', title: 'Capitation vs Fee-for-Service', desc: 'How HMOs pay doctors and hospitals' },
+                            { id: 'mlr-explained', title: 'Medical Loss Ratio (MLR)', desc: 'How much of your premium goes to care vs admin' },
+                            { id: 'copay-coinsurance', title: 'Co-pay and Co-insurance', desc: 'What you might pay out-of-pocket' },
+                            { id: 'sublimit-explained', title: 'Sub-Limits Explained', desc: 'Hidden limits within your coverage' }
+                        ]
+                    },
+                    {
+                        name: 'BENEFITS & COVERAGE',
+                        articles: [
+                            { id: 'benefit-limits-1', title: 'Overall ≠ Benefit Limits', desc: 'Understanding specific benefit caps' },
+                            { id: 'maternity-waiting-1', title: 'Maternity Waiting Periods', desc: '12-month delays you need to know about' },
+                            { id: 'medication-coverage', title: 'Medication Coverage', desc: 'Which drugs are and aren\'t covered' },
+                            { id: 'diagnostics-scans', title: 'Diagnostics & Scans', desc: 'MRI, CT, and lab test coverage' },
+                            { id: 'dental-optical', title: 'Dental & Optical', desc: 'Usually not covered — here\'s why' },
+                            { id: 'exclusions-matter', title: 'Common Exclusions', desc: 'What is actually excluded from your plan' }
+                        ]
+                    },
+                    {
+                        name: 'CHOOSING THE RIGHT PLAN',
+                        articles: [
+                            { id: 'how-to-compare-hmos', title: 'How to Compare HMOs', desc: 'Beyond just looking at price' },
+                            { id: 'check-your-hospital', title: 'Verifying Your Hospital', desc: 'How to confirm acceptance before buying' },
+                            { id: 'verification-checklist', title: 'Verification Checklist', desc: 'Eight questions to ask before paying' },
+                            { id: 'common-mistakes', title: 'Common Mistakes', desc: 'Errors people make when choosing plans' }
+                        ]
+                    },
+                    {
+                        name: 'CLAIMS & PROBLEMS',
+                        articles: [
+                            { id: 'authorization-matters', title: 'Authorization Matters', desc: 'Get approval before treatment' },
+                            { id: 'when-claim-denied', title: 'When Claims Are Denied', desc: 'How to appeal a rejection' },
+                            { id: 'escalating-issues', title: 'Escalating Issues', desc: 'Complaint process and escalation channels' }
+                        ]
+                    },
+                    {
+                        name: 'FOR EMPLOYERS',
+                        articles: [
+                            { id: 'corporate-hmo', title: 'HMO for Your Employees', desc: 'Choosing insurance for your staff' },
+                            { id: 'employers-sme-guide', title: 'SME Guide to Group HMOs', desc: 'Affordable coverage for small businesses' }
+                        ]
+                    }
                 ];
 
-                for (const content of CONTENT) {
-                    const card = document.createElement('div');
-                    card.style.cssText = 'background: var(--color-bg-alt); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--spacing-lg); cursor: pointer; transition: all var(--transition-fast);';
-                    card.onmouseover = () => card.style.boxShadow = 'var(--shadow-lg)';
-                    card.onmouseout = () => card.style.boxShadow = 'none';
+                for (const category of CATEGORIES) {
+                    // Add category header
+                    const categoryHeader = document.createElement('h2');
+                    categoryHeader.style.cssText = 'font-size: var(--font-size-large); color: var(--color-primary); margin: var(--spacing-xl) 0 var(--spacing-md) 0; border-bottom: 2px solid var(--color-primary); padding-bottom: var(--spacing-sm);';
+                    categoryHeader.textContent = category.name;
+                    container.appendChild(categoryHeader);
 
-                    card.innerHTML = `
-                        <h3 style="font-size: var(--font-size-base); font-weight: 700; color: var(--color-primary); margin-bottom: var(--spacing-sm);">${content.title}</h3>
-                        <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin-bottom: var(--spacing-md);">${content.desc}</p>
-                        <button class="btn btn-secondary" style="width: 100%;" onclick="app.showArticle('${content.id}')">Read More</button>
-                    `;
-                    container.appendChild(card);
+                    // Add article cards for this category
+                    for (const content of category.articles) {
+                        const card = document.createElement('div');
+                        card.style.cssText = 'background: var(--color-bg-alt); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--spacing-lg); cursor: pointer; transition: all var(--transition-fast); margin-bottom: var(--spacing-md);';
+                        card.onmouseover = () => card.style.boxShadow = 'var(--shadow-lg)';
+                        card.onmouseout = () => card.style.boxShadow = 'none';
+
+                        card.innerHTML = `
+                            <h3 style="font-size: var(--font-size-base); font-weight: 700; color: var(--color-primary); margin-bottom: var(--spacing-sm);">${content.title}</h3>
+                            <p style="font-size: var(--font-size-small); color: var(--color-text-light); margin-bottom: var(--spacing-md);">${content.desc}</p>
+                            <button class="btn btn-secondary" style="width: 100%;" onclick="app.showArticle('${content.id}')">Read More</button>
+                        `;
+                        container.appendChild(card);
+                    }
                 }
             },
 
@@ -3153,6 +3344,267 @@ I'm interested in learning more about this plan. Can you help me verify:
                         </ul>
                         <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What to do:</h4>
                         <p>Ask the HMO specifically about any treatments you think you might need. Don't assume they're covered.</p>
+                    `
+                },
+                'hmo-vs-nhia': {
+                    title: 'HMO vs NHIA: What\'s the Difference?',
+                    content: `
+                        <p>In Nigeria, you can get covered through either an HMO or the National Health Insurance Scheme (NHIA). They're different systems.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">HMO (Private):</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li>Private companies running their own networks</li>
+                            <li>You can choose which HMO to join</li>
+                            <li>Premium varies by plan</li>
+                            <li>Usually more plan options and flexibility</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">NHIA (Government):</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li>Nigeria's government health insurance program</li>
+                            <li>Different rules and covered facilities</li>
+                            <li>Limited to certain hospitals</li>
+                            <li>Can be combined with HMO for wider coverage</li>
+                        </ul>
+                        <p><strong>Many Nigerians use both:</strong> NHIA for basic coverage, HMO for better choice and faster access.</p>
+                    `
+                },
+                'premium-explained': {
+                    title: 'What You Pay for Insurance: Premium Explained',
+                    content: `
+                        <p>The premium is the amount you pay for your health insurance. It's the core cost of being covered.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">How premiums work:</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li><strong>Annual premium:</strong> What you pay per year (example: ₦61,525/year)</li>
+                            <li><strong>Monthly premium:</strong> Same amount divided by 12 (₦5,127/month)</li>
+                            <li><strong>Per person or family:</strong> Premium might be per individual or cover the whole family</li>
+                            <li><strong>Changes yearly:</strong> HMOs adjust premiums annually</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What affects your premium:</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li>Your age (younger = lower)</li>
+                            <li>Health status</li>
+                            <li>Number of people covered</li>
+                            <li>Benefits included in the plan</li>
+                            <li>How the HMO conducts claims experience</li>
+                        </ul>
+                    `
+                },
+                'mlr-explained': {
+                    title: 'Medical Loss Ratio (MLR): What HMOs Actually Spend on Care',
+                    content: `
+                        <p>MLR is a percentage that shows how much of your premium money an HMO actually spends on healthcare vs. administrative costs.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Example:</h4>
+                        <p>If an HMO has an 80% MLR: For every ₦100 of premiums they collect, ₦80 goes to paying for actual healthcare, and ₦20 goes to administration, profits, and shareholder returns.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What's a good MLR?</h4>
+                        <ul style="margin-left: var(--spacing-lg);">
+                            <li>80%+ is generally considered fair</li>
+                            <li>70-79% means more money goes to admin and profit</li>
+                            <li>Below 70% is a red flag — you're paying more for administration than healthcare</li>
+                        </ul>
+                    `
+                },
+                'copay-coinsurance': {
+                    title: 'Co-pay and Co-insurance: What You Pay Out-of-Pocket',
+                    content: `
+                        <p>Your insurance premium covers most care, but you might still pay some costs at the hospital. These are co-pays and co-insurance.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Co-pay:</h4>
+                        <p>A fixed amount you pay per visit (example: ₦5,000 every time you see a doctor).</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Co-insurance:</h4>
+                        <p>A percentage of the bill you share (example: You pay 10%, the HMO pays 90%).</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Ask before buying:</h4>
+                        <p>Does this plan have co-pays or co-insurance? If yes, how much will I pay per visit?</p>
+                    `
+                },
+                'sublimit-explained': {
+                    title: 'Sub-Limits: The Hidden Limit Inside Your Limit',
+                    content: `
+                        <p>A sub-limit is a lower cap on a benefit that sits within a larger benefit limit. It reduces how much you're actually covered.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Example:</h4>
+                        <p><strong>Overall limit:</strong> ₦5,000,000</p>
+                        <p><strong>Surgery limit:</strong> ₦2,000,000</p>
+                        <p><strong>Surgery sub-limit for abroad treatment:</strong> ₦500,000</p>
+                        <p>If you need surgery outside Nigeria, only ₦500,000 is covered — even though surgery overall is ₦2M.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What to check:</h4>
+                        <p>Ask the HMO if there are sub-limits on any benefits you care about (surgery, maternity, prescription drugs).</p>
+                    `
+                },
+                'medication-coverage': {
+                    title: 'Medication Coverage: What Drugs Are Included?',
+                    content: `
+                        <p>Most HMOs don't publish which specific drugs they cover. This is a common source of surprise bills at the pharmacy.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Types of medication restrictions:</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li><strong>Not covered at all:</strong> You pay 100%</li>
+                            <li><strong>Partial coverage:</strong> You pay 20-50%, HMO pays the rest</li>
+                            <li><strong>Generic only:</strong> Brand names not covered</li>
+                            <li><strong>Prior authorization:</strong> You need HMO approval before buying</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">If you take regular medications:</h4>
+                        <p>Before buying a plan, ask if your specific medications are covered and at what percentage.</p>
+                    `
+                },
+                'diagnostics-scans': {
+                    title: 'Diagnostics: MRI, CT Scans, and Lab Tests',
+                    content: `
+                        <p>Diagnostic tests like MRI, CT scans, and X-rays can be expensive. Different HMOs cover them differently.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Common coverage patterns:</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li><strong>Fully covered:</strong> You pay nothing</li>
+                            <li><strong>Fixed limit:</strong> Plan covers up to ₦200,000/year in scans</li>
+                            <li><strong>Requires authorization:</strong> HMO must approve before you go</li>
+                            <li><strong>Co-insurance:</strong> You pay a percentage</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What to ask:</h4>
+                        <p>Does this plan cover MRI and CT scans? How many per year? Do I need approval first?</p>
+                    `
+                },
+                'dental-optical': {
+                    title: 'Dental and Optical: Usually Not Covered',
+                    content: `
+                        <p>Most HMO plans in Nigeria do not cover dental (teeth) or optical (glasses/contacts) care. You often pay 100% out of pocket.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What this means:</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li>Dental cleaning: Not covered</li>
+                            <li>Filling a cavity: Not covered</li>
+                            <li>Eyeglasses: Not covered</li>
+                            <li>Contact lenses: Not covered</li>
+                            <li>Emergency dental (tooth pain): Might be covered under general emergency</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Your options:</h4>
+                        <p>Budget for dental and optical separately, or look for an HMO that specifically includes these benefits (they're rare and often cost more).</p>
+                    `
+                },
+                'how-to-compare-hmos': {
+                    title: 'How to Compare HMO Plans',
+                    content: `
+                        <p>Comparing HMOs isn't just about price. Here's how to do it properly.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Step 1: Compare on your priorities</h4>
+                        <p>Don't compare all benefits equally. Focus on what matters to you (surgery, maternity, price, hospital access).</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Step 2: Check specific benefits, not headlines</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li>Not the overall limit, but the specific limits for your needs</li>
+                            <li>Not the hospital list, but whether YOUR hospital is included</li>
+                            <li>Not the premium, but the premium for YOUR household size</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Step 3: Verify with the HMO</h4>
+                        <p>Don't trust marketing materials. Call and ask your specific questions.</p>
+                    `
+                },
+                'check-your-hospital': {
+                    title: 'How to Check if Your Hospital is Really Accepted',
+                    content: `
+                        <p>Hospital networks change constantly. Just because a hospital appears on a list doesn't mean your plan is accepted there right now.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">The right way to verify:</h4>
+                        <ol style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li>Call the HMO directly (not the hospital yet)</li>
+                            <li>Give them your exact plan name</li>
+                            <li>Ask if [Hospital Name] currently accepts this specific plan</li>
+                            <li>Ask about which departments or wards</li>
+                            <li>Get a reference number for this confirmation</li>
+                            <li>Call the hospital and confirm from their side</li>
+                        </ol>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What not to do:</h4>
+                        <p>Don't assume the hospital list is current. Don't just ask "Is Clearline accepted?" — ask "Is Plan XYZ accepted?"</p>
+                    `
+                },
+                'common-mistakes': {
+                    title: 'Common Mistakes People Make When Choosing HMOs',
+                    content: `
+                        <p>These are the mistakes we see most often:</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Mistake #1: Assuming overall limit = benefit-specific limit</h4>
+                        <p>₦5M overall doesn't mean ₦5M for surgery. Read the fine print.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Mistake #2: Not checking your specific hospital</h4>
+                        <p>Hospital lists are not always current. Verify directly before enrolling.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Mistake #3: Only comparing price</h4>
+                        <p>The cheapest plan might not cover what you need. Compare on your actual priorities.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Mistake #4: Ignoring waiting periods</h4>
+                        <p>12-month waiting periods on maternity are common. Know if they apply to you.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Mistake #5: Not asking about your current doctor</h4>
+                        <p>Your favorite doctor might not be in network. Always check first.</p>
+                    `
+                },
+                'authorization-matters': {
+                    title: 'Why Authorization Matters: Get Approval Before Treatment',
+                    content: `
+                        <p>Authorization means you get permission from your HMO before receiving care. Going without it can mean a denied claim and a surprise bill.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What needs authorization?</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li>Specialist visits (most HMOs)</li>
+                            <li>Surgical procedures</li>
+                            <li>Hospital admission</li>
+                            <li>MRI/CT scans</li>
+                            <li>Certain medications</li>
+                            <li>Referrals to specific hospitals</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">What happens if you don't get authorization?</h4>
+                        <p>The HMO might refuse to pay, leaving you with the full bill (often ₦100,000+).</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Best practice:</h4>
+                        <p>Always ask your doctor or the hospital to get HMO authorization BEFORE treatment.</p>
+                    `
+                },
+                'when-claim-denied': {
+                    title: 'What to Do When a Claim is Denied',
+                    content: `
+                        <p>Sometimes HMOs refuse to pay for a treatment you thought was covered. Here's how to fight it.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Step 1: Get the denial in writing</h4>
+                        <p>Don't accept a verbal "no." Demand the written denial with the specific reason.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Step 2: Check your policy document</h4>
+                        <p>Read the exact wording about the benefit they denied. Is it really excluded?</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Step 3: Appeal in writing</h4>
+                        <p>Submit a written appeal with supporting documents (doctor's letter, hospital bills, your policy document).</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Step 4: Escalate if needed</h4>
+                        <p>Contact the HMO's patient ombudsman or complaints department. If still denied, contact NAICOM (the insurance regulator).</p>
+                    `
+                },
+                'escalating-issues': {
+                    title: 'How to Escalate an Issue With Your HMO',
+                    content: `
+                        <p>If your HMO isn't resolving your problem, you have options.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Level 1: Customer service</h4>
+                        <p>Call the HMO and explain the issue. Get a reference number and follow-up date.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Level 2: Complaints department</h4>
+                        <p>If unresolved, write to the HMO's formal complaints department with all documents and proof of your previous contact.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Level 3: NAICOM (insurance regulator)</h4>
+                        <p>If the HMO doesn't resolve it within 30 days, file a complaint with NAICOM at www.naicom.gov.ng or call their complaints line.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Level 4: Legal action</h4>
+                        <p>Only as a last resort. Consult a lawyer who specializes in insurance disputes.</p>
+                    `
+                },
+                'corporate-hmo': {
+                    title: 'Choosing an HMO for Your Employees',
+                    content: `
+                        <p>If you\'re an employer buying health insurance for staff, here\'s what to consider.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Key questions to ask:</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li>What's the per-employee cost for different plan levels?</li>
+                            <li>Do you offer family coverage?</li>
+                            <li>What are the hospital networks in my employees' locations?</li>
+                            <li>What's the claims process and turnaround time?</li>
+                            <li>Can we customize benefits for our workforce?</li>
+                            <li>What support do you offer HR departments?</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Employee communication:</h4>
+                        <p>Educate employees about what's covered and how to use their benefits. An HMO is only valuable if employees understand it.</p>
+                    `
+                },
+                'employers-sme-guide': {
+                    title: 'HMO Guide for Small and Medium Enterprises (SMEs)',
+                    content: `
+                        <p>For SMEs with 5-50 employees, buying group health insurance is often more affordable than individual plans.</p>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Why group HMOs are better:</h4>
+                        <ul style="margin-left: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                            <li>Lower per-employee premium</li>
+                            <li>Attracts and retains good staff</li>
+                            <li>Tax benefits in some cases</li>
+                            <li>Simplified administration</li>
+                        </ul>
+                        <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-weight: 700;">Getting started:</h4>
+                        <ol style="margin-left: var(--spacing-lg);">
+                            <li>Assess your employee healthcare needs</li>
+                            <li>Compare 3-5 HMO group plans</li>
+                            <li>Negotiate on price and coverage</li>
+                            <li>Implement with clear communication to staff</li>
+                            <li>Review annually and adjust as needed</li>
+                        </ol>
                     `
                 }
             },
