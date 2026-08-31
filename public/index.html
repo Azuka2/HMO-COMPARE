@@ -1390,6 +1390,9 @@
 
                 switch (q.type) {
                     case 'single-select':
+                        // Auto-advance for simple single-select questions with <= 4 options
+                        const shouldAutoAdvance = q.options.length <= 4 && !['Q1', 'Q2', 'Q3', 'Q9', 'Q22'].includes(q.id);
+
                         for (const opt of q.options) {
                             const label = document.createElement('label');
                             label.className = 'option';
@@ -1412,6 +1415,15 @@
                                 this.skipped = this.skipped.filter(x => x !== q.id);
                                 this.saveState();
                                 this.renderQuestion(num);
+
+                                // Auto-advance after brief delay
+                                if (shouldAutoAdvance) {
+                                    setTimeout(() => {
+                                        if (this.currentQuestion === num) {
+                                            this.continue();
+                                        }
+                                    }, 400);
+                                }
                             };
                             optContainer.appendChild(label);
                         }
@@ -1471,6 +1483,7 @@
 
                         const current = this.answers[q.key] || 100000;
 
+                        // Slider display
                         const labels = document.createElement('div');
                         labels.className = 'slider-labels';
                         labels.innerHTML = '<span>₦20k</span><span>₦3m</span>';
@@ -1482,20 +1495,68 @@
                         slider.min = q.min;
                         slider.max = q.max;
                         slider.value = current;
+                        sliderDiv.appendChild(slider);
+
+                        // Numeric input + slider sync
+                        const inputWrapper = document.createElement('div');
+                        inputWrapper.style.cssText = 'display: flex; gap: var(--spacing-sm); align-items: center; margin-top: var(--spacing-md);';
+
+                        const numInput = document.createElement('input');
+                        numInput.type = 'number';
+                        numInput.className = 'slider-number-input';
+                        numInput.value = current;
+                        numInput.min = q.min;
+                        numInput.max = q.max;
+                        numInput.step = '10000';
+                        numInput.style.cssText = 'flex: 1; padding: var(--spacing-sm) var(--spacing-md); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: var(--font-size-base);';
 
                         const valueDiv = document.createElement('div');
                         valueDiv.className = 'slider-value';
                         valueDiv.textContent = '₦' + new Intl.NumberFormat('en-NG').format(current);
+                        valueDiv.style.cssText = 'min-width: 120px; text-align: right; font-weight: 700; color: var(--color-primary);';
+
+                        numInput.oninput = () => {
+                            const val = Math.max(q.min, Math.min(q.max, parseInt(numInput.value) || 0));
+                            slider.value = val;
+                            valueDiv.textContent = '₦' + new Intl.NumberFormat('en-NG').format(val);
+                            this.answers[q.key] = val;
+                            this.skipped = this.skipped.filter(x => x !== q.id);
+                            this.saveState();
+                        };
 
                         slider.oninput = () => {
+                            numInput.value = slider.value;
                             valueDiv.textContent = '₦' + new Intl.NumberFormat('en-NG').format(slider.value);
                             this.answers[q.key] = parseInt(slider.value);
                             this.skipped = this.skipped.filter(x => x !== q.id);
                             this.saveState();
                         };
 
-                        sliderDiv.appendChild(slider);
-                        sliderDiv.appendChild(valueDiv);
+                        inputWrapper.appendChild(numInput);
+                        inputWrapper.appendChild(valueDiv);
+                        sliderDiv.appendChild(inputWrapper);
+
+                        // Quick presets
+                        const presetsDiv = document.createElement('div');
+                        presetsDiv.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: var(--spacing-sm); margin-top: var(--spacing-md);';
+
+                        const presets = [20000, 50000, 100000, 300000, 600000, 1000000, 3000000];
+                        for (const preset of presets) {
+                            const presetBtn = document.createElement('button');
+                            presetBtn.className = 'btn btn-secondary';
+                            presetBtn.textContent = '₦' + (preset >= 1000000 ? (preset / 1000000) + 'M' : (preset / 1000) + 'k');
+                            presetBtn.style.cssText = 'padding: var(--spacing-sm); font-size: var(--font-size-small);';
+                            presetBtn.onclick = () => {
+                                slider.value = preset;
+                                numInput.value = preset;
+                                valueDiv.textContent = '₦' + new Intl.NumberFormat('en-NG').format(preset);
+                                this.answers[q.key] = preset;
+                                this.skipped = this.skipped.filter(x => x !== q.id);
+                                this.saveState();
+                            };
+                            presetsDiv.appendChild(presetBtn);
+                        }
+                        sliderDiv.appendChild(presetsDiv);
 
                         const notSureBtn = document.createElement('button');
                         notSureBtn.className = 'btn btn-secondary';
