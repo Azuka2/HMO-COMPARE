@@ -277,6 +277,137 @@ export const PaymentModel = {
  * @property {Object} audit - Full engine audit trail (not displayed, archived)
  */
 
+/**
+ * PHASE 3 — PUBLIC-SECTOR TYPES
+ * NHIA Programmes and State Health Insurance Schemes
+ */
+
+/**
+ * Public Sector Programme Type
+ * § NHIA: National Health Insurance Authority programme
+ * § STATE_SCHEME: State-level health insurance scheme
+ * § TELEMEDICINE: Virtual care only (already in private HMOs)
+ */
+export const PublicSectorType = {
+  NHIA: 'nhia',
+  STATE_SCHEME: 'state_scheme',
+  HYBRID: 'hybrid'
+};
+
+/**
+ * NHIA Programme Status
+ * For tracking official NHIA programme data completeness
+ * § ACTIVE: Currently accepting enrollments
+ * § PENDING: Announced but not yet open
+ * § CLOSED: No longer accepting new enrollments
+ * § UNKNOWN: Status not publicly confirmed
+ */
+export const NhiaProgrammeStatus = {
+  ACTIVE: 'active',
+  PENDING: 'pending',
+  CLOSED: 'closed',
+  UNKNOWN: 'unknown'
+};
+
+/**
+ * NHIA Programme
+ * Official public-sector health insurance programme
+ *
+ * @typedef {Object} NhiaProgramme
+ * @property {string} nhia_id - NG-NHIA-001 format
+ * @property {string} programme_name - Official name
+ * @property {string} programme_type - e.g., 'BHCPF', 'Maternal', 'Senior Citizen'
+ * @property {string} status - NhiaProgrammeStatus enum
+ * @property {string[]} target_populations - e.g., ['pregnant_women', 'children_under_5', 'seniors']
+ *
+ * @property {string} eligibility_summary - Plain language eligibility
+ * @property {string[]} eligibility_criteria - Specific requirements
+ * @property {string} enrollment_pathway - How to enroll
+ *
+ * @property {BenefitValue} contribution - Annual or per-period contribution
+ * @property {string} contribution_status - PremiumStatus enum (whether published)
+ * @property {BenefitValue|null} co_payment - Out-of-pocket per visit
+ * @property {BenefitValue|null} annual_out_of_pocket_max - Maximum OOP
+ *
+ * @property {Object[]} benefit_package - Array of covered benefits
+ * @property {BenefitValue} overall_limit - Annual ceiling if published
+ * @property {BenefitValue} primary_care - Primary care coverage
+ * @property {BenefitValue} specialist - Specialist care coverage
+ * @property {BenefitValue} hospitalization - Hospital admission coverage
+ * @property {BenefitValue} drugs - Medication coverage
+ * @property {BenefitValue} maternity - Maternity coverage if applicable
+ * @property {BenefitValue} emergency - Emergency care coverage
+ *
+ * @property {string[]} geographic_scope - ['NG'] or specific regions
+ * @property {string[]} provider_network - How to find providers
+ * @property {BenefitValue|null} network_size - Number of facilities if published
+ *
+ * @property {WaitingPeriod[]} waiting_periods - Coverage start delays
+ * @property {string[]} exclusions - What's not covered
+ * @property {string[]} limitations - Coverage caps/conditions
+ *
+ * @property {string} official_url - Official NHIA/government source
+ * @property {string} retrieved_date - YYYY-MM-DD when we collected this
+ * @property {string} source_date - YYYY-MM-DD from the official source
+ * @property {string} evidence_tier - EvidenceTier
+ * @property {string} provenance_note - "Official NHIA" or "Government gazette"
+ * @property {string} last_verified - YYYY-MM-DD
+ */
+
+/**
+ * State Health Insurance Scheme
+ * State-level public health insurance programme
+ *
+ * @typedef {Object} StateScheme
+ * @property {string} scheme_id - NG-STATE-LAGOS-001 format
+ * @property {string} state - State name
+ * @property {string} scheme_name - Official scheme name
+ * @property {string} governing_agency - Agency administering the scheme
+ * @property {string} status - NhiaProgrammeStatus enum
+ *
+ * @property {string} target_populations - Who the scheme serves
+ * @property {string} eligibility_summary - Plain language eligibility
+ * @property {string[]} eligibility_criteria - Specific requirements
+ * @property {string} enrollment_pathway - How to enroll
+ *
+ * @property {BenefitValue} contribution - Annual contribution if published
+ * @property {string} contribution_status - PremiumStatus enum
+ * @property {BenefitValue|null} co_payment - Out-of-pocket per visit
+ *
+ * @property {Object[]} benefit_package - Array of covered benefits
+ * @property {BenefitValue} overall_limit - Annual ceiling if published
+ * @property {BenefitValue} primary_care - Primary care coverage
+ * @property {BenefitValue} hospitalization - Hospital coverage
+ * @property {BenefitValue} drugs - Medication coverage
+ *
+ * @property {string} official_url - Official state/agency website
+ * @property {string} retrieved_date - YYYY-MM-DD
+ * @property {string} source_date - YYYY-MM-DD from official source
+ * @property {string} evidence_tier - EvidenceTier
+ * @property {string} last_verified - YYYY-MM-DD
+ * @property {string} notes - Data quality notes
+ */
+
+/**
+ * Public Option Recommendation
+ * For public-sector programmes in results
+ * Distinct from private HMO Recommendation
+ *
+ * @typedef {Object} PublicOptionRecommendation
+ * @property {string} option_type - PublicSectorType
+ * @property {string} programme_id - nhia_id or scheme_id
+ * @property {string} programme_name
+ * @property {string} eligibility_status - 'eligible' | 'potentially_eligible' | 'not_eligible'
+ * @property {string} eligibility_reason - Why user is/isn't eligible
+ * @property {BenefitValue} contribution - Cost to user
+ * @property {Object[]} key_benefits - Top 3-5 benefits
+ * @property {Object[]} limitations - Key coverage gaps
+ * @property {string} enrollment_url - Where to enroll
+ * @property {string} confidence_tier - How certain is our data? (HIGH/MEDIUM/LOW)
+ * @property {string} last_verified - YYYY-MM-DD
+ * @property {string} recommendation_reason - Why we're showing this
+ */
+
 export default {
   BenefitStatus,
   PremiumStatus,
@@ -285,5 +416,7 @@ export default {
   ProductType,
   EvidenceTier,
   ProviderAccessSystem,
-  PaymentModel
+  PaymentModel,
+  PublicSectorType,
+  NhiaProgrammeStatus
 };
