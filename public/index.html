@@ -442,6 +442,83 @@
             font-size: var(--font-size-base);
         }
 
+        .state-selector-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .state-search-input {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            font-family: inherit;
+            transition: border-color var(--transition-fast);
+            min-height: 48px;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+        }
+
+        .state-search-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.1);
+        }
+
+        .state-search-input::placeholder {
+            color: var(--color-text-light);
+        }
+
+        .state-dropdown {
+            display: flex;
+            flex-direction: column;
+            max-height: 320px;
+            overflow-y: auto;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background-color: var(--color-bg);
+        }
+
+        .state-option {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border-bottom: 1px solid var(--color-border);
+            min-height: 48px;
+        }
+
+        .state-option:last-child {
+            border-bottom: none;
+        }
+
+        .state-option:hover {
+            background-color: var(--color-bg-alt);
+            border-left: 4px solid var(--color-primary);
+            padding-left: calc(var(--spacing-md) - 4px);
+        }
+
+        .state-option.selected {
+            background-color: var(--color-primary-lighter);
+            border-left: 4px solid var(--color-primary);
+            padding-left: calc(var(--spacing-md) - 4px);
+            font-weight: 500;
+        }
+
+        .state-option:focus {
+            outline: none;
+            background-color: var(--color-bg-alt);
+        }
+
+        .state-label {
+            flex: 1;
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+        }
+
         .text-input {
             width: 100%;
             padding: var(--spacing-md);
@@ -1390,42 +1467,47 @@
 
                 switch (q.type) {
                     case 'single-select':
-                        // Auto-advance for simple single-select questions with <= 4 options
-                        const shouldAutoAdvance = q.options.length <= 4 && !['Q1', 'Q2', 'Q3', 'Q9', 'Q22'].includes(q.id);
+                        // Special handling for state selector (Q2)
+                        if (q.id === 'Q2') {
+                            this.renderSearchableStateSelector(q, optContainer, num);
+                        } else {
+                            // Auto-advance for simple single-select questions with <= 4 options
+                            const shouldAutoAdvance = q.options.length <= 4 && !['Q1', 'Q2', 'Q3', 'Q9', 'Q22'].includes(q.id);
 
-                        for (const opt of q.options) {
-                            const label = document.createElement('label');
-                            label.className = 'option';
-                            if (this.answers[q.key] === opt.value) label.classList.add('selected');
+                            for (const opt of q.options) {
+                                const label = document.createElement('label');
+                                label.className = 'option';
+                                if (this.answers[q.key] === opt.value) label.classList.add('selected');
 
-                            const input = document.createElement('input');
-                            input.type = 'radio';
-                            input.name = q.key;
-                            input.value = opt.value;
-                            input.checked = this.answers[q.key] === opt.value;
+                                const input = document.createElement('input');
+                                input.type = 'radio';
+                                input.name = q.key;
+                                input.value = opt.value;
+                                input.checked = this.answers[q.key] === opt.value;
 
-                            const labelText = document.createElement('span');
-                            labelText.className = 'option-label';
-                            labelText.textContent = opt.text;
+                                const labelText = document.createElement('span');
+                                labelText.className = 'option-label';
+                                labelText.textContent = opt.text;
 
-                            label.appendChild(input);
-                            label.appendChild(labelText);
-                            label.onclick = () => {
-                                this.answers[q.key] = opt.value;
-                                this.skipped = this.skipped.filter(x => x !== q.id);
-                                this.saveState();
-                                this.renderQuestion(num);
+                                label.appendChild(input);
+                                label.appendChild(labelText);
+                                label.onclick = () => {
+                                    this.answers[q.key] = opt.value;
+                                    this.skipped = this.skipped.filter(x => x !== q.id);
+                                    this.saveState();
+                                    this.renderQuestion(num);
 
-                                // Auto-advance after brief delay
-                                if (shouldAutoAdvance) {
-                                    setTimeout(() => {
-                                        if (this.currentQuestion === num) {
-                                            this.continue();
-                                        }
-                                    }, 400);
-                                }
-                            };
-                            optContainer.appendChild(label);
+                                    // Auto-advance after brief delay
+                                    if (shouldAutoAdvance) {
+                                        setTimeout(() => {
+                                            if (this.currentQuestion === num) {
+                                                this.continue();
+                                            }
+                                        }, 400);
+                                    }
+                                };
+                                optContainer.appendChild(label);
+                            }
                         }
                         break;
 
@@ -1643,6 +1725,87 @@
                 } else {
                     btnContinue.textContent = 'Continue →';
                 }
+            },
+
+            renderSearchableStateSelector(q, container, questionNum) {
+                const states = q.options.map(opt => opt.value);
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'state-selector-wrapper';
+
+                const searchInput = document.createElement('input');
+                searchInput.type = 'text';
+                searchInput.className = 'state-search-input';
+                searchInput.placeholder = 'Search states... (e.g. "Lag" for Lagos)';
+                searchInput.setAttribute('aria-label', 'Search Nigerian states');
+
+                const dropdown = document.createElement('div');
+                dropdown.className = 'state-dropdown';
+                dropdown.setAttribute('role', 'listbox');
+
+                const currentValue = this.answers[q.key];
+                let filteredStates = states;
+
+                const renderOptions = (statesToRender) => {
+                    dropdown.innerHTML = '';
+                    for (const state of statesToRender) {
+                        const option = document.createElement('div');
+                        option.className = 'state-option';
+                        if (state === currentValue) {
+                            option.classList.add('selected');
+                            option.setAttribute('aria-selected', 'true');
+                        }
+                        option.setAttribute('role', 'option');
+                        option.setAttribute('tabindex', '0');
+
+                        const label = document.createElement('span');
+                        label.className = 'state-label';
+                        label.textContent = state;
+
+                        option.appendChild(label);
+
+                        option.onclick = () => {
+                            this.answers[q.key] = state;
+                            this.skipped = this.skipped.filter(x => x !== q.id);
+                            this.saveState();
+                            searchInput.value = '';
+                            filteredStates = states;
+                            renderOptions(states);
+                            this.renderQuestion(questionNum);
+                        };
+
+                        option.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter') {
+                                option.click();
+                            }
+                        });
+
+                        dropdown.appendChild(option);
+                    }
+                };
+
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase();
+                    filteredStates = states.filter(state =>
+                        state.toLowerCase().includes(query)
+                    );
+                    renderOptions(filteredStates);
+                });
+
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        searchInput.value = '';
+                        filteredStates = states;
+                        renderOptions(states);
+                    }
+                });
+
+                wrapper.appendChild(searchInput);
+                wrapper.appendChild(dropdown);
+                container.appendChild(wrapper);
+
+                renderOptions(states);
+                setTimeout(() => searchInput.focus(), 100);
             },
 
             skip() {
