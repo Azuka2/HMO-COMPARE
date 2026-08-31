@@ -1471,8 +1471,10 @@
                         if (q.id === 'Q2') {
                             this.renderSearchableStateSelector(q, optContainer, num);
                         } else {
-                            // Auto-advance for simple single-select questions with <= 4 options
-                            const shouldAutoAdvance = q.options.length <= 4 && !['Q1', 'Q2', 'Q3', 'Q9', 'Q22'].includes(q.id);
+                            // Auto-advance disabled: P0 bug fix
+                            // Previous: shouldAutoAdvance = q.options.length <= 4 && !['Q1', 'Q2', 'Q3', 'Q9', 'Q22'].includes(q.id);
+                            // Issue: Stale timers can fire without clearing, causing skipped questions
+                            const shouldAutoAdvance = false;
 
                             for (const opt of q.options) {
                                 const label = document.createElement('label');
